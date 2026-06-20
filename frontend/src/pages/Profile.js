@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
@@ -16,16 +16,7 @@ const Profile = () => {
   const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-    fetchBookings();
-    fetchUserProfile();
-  }, []);
-
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     try {
       const { data } = await axios.get(`${API_BASE}/users/profile`, { headers: getAuthHeaders() });
       setUser(prev => ({ ...prev, ...data }));
@@ -33,9 +24,9 @@ const Profile = () => {
     } catch (error) {
       console.error('Failed to load user profile');
     }
-  };
+  }, [getAuthHeaders, setUser]);
 
-  const fetchBookings = async () => {
+  const fetchBookings = useCallback(async () => {
     try {
       const { data } = await axios.get(`${API_BASE}/bookings/mybookings`, { headers: getAuthHeaders() });
       setBookings(data);
@@ -44,7 +35,16 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getAuthHeaders]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    fetchBookings();
+    fetchUserProfile();
+  }, [user, navigate, fetchBookings, fetchUserProfile]);
 
   const cancelBooking = async (bookingId) => {
     if (window.confirm('Are you sure you want to cancel this booking?')) {

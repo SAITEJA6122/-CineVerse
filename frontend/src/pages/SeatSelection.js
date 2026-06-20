@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
@@ -18,15 +18,7 @@ const SeatSelection = () => {
   const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-    fetchShow();
-  }, [showId]);
-
-  const fetchShow = async () => {
+  const fetchShow = useCallback(async () => {
     try {
       const { data } = await axios.get(`${API_BASE}/shows/${showId}`);
       setShow(data);
@@ -36,7 +28,15 @@ const SeatSelection = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showId, showToast, navigate]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    fetchShow();
+  }, [user, navigate, fetchShow]);
 
   const getSeatTier = (rowIndex) => {
     if (!show || !show.seatTiers) return 'Silver';
@@ -52,7 +52,6 @@ const SeatSelection = () => {
   };
 
   const toggleSeat = (rowIndex, seatIndex) => {
-    const seatKey = `${rowIndex}-${seatIndex}`;
     const price = getSeatPrice(rowIndex);
     const tier = getSeatTier(rowIndex);
     setSelectedSeats(prev => {

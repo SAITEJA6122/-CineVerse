@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
@@ -15,11 +15,7 @@ const BookingConfirmation = () => {
   const { theme } = useContext(ThemeContext);
   const { showToast } = useContext(ToastContext);
 
-  useEffect(() => {
-    fetchBooking();
-  }, [bookingId]);
-
-  const fetchBooking = async () => {
+  const fetchBooking = useCallback(async () => {
     try {
       const { data } = await axios.get(`${API_BASE}/bookings/mybookings`, { headers: getAuthHeaders() });
       const foundBooking = data.find(b => b._id === bookingId);
@@ -33,7 +29,11 @@ const BookingConfirmation = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [bookingId, getAuthHeaders, showToast]);
+
+  useEffect(() => {
+    fetchBooking();
+  }, [fetchBooking]);
 
   if (loading) {
     return (

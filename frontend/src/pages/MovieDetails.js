@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MovieCard from '../components/MovieCard';
@@ -23,15 +23,7 @@ const MovieDetails = () => {
   const { user, getAuthHeaders } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchMovie();
-    fetchShows();
-    fetchSimilarMovies();
-    addToRecentlyViewed();
-    fetchFavorites();
-  }, [id, user]);
-
-  const fetchFavorites = async () => {
+  const fetchFavorites = useCallback(async () => {
     if (!user) return;
     try {
       const { data } = await axios.get(`${API_BASE}/users/profile`, { headers: getAuthHeaders() });
@@ -40,9 +32,9 @@ const MovieDetails = () => {
     } catch (error) {
       console.error('Failed to load favorites');
     }
-  };
+  }, [user, getAuthHeaders]);
 
-  const fetchMovie = async () => {
+  const fetchMovie = useCallback(async () => {
     try {
       const { data } = await axios.get(`${API_BASE}/movies/${id}`);
       setMovie(data);
@@ -51,9 +43,9 @@ const MovieDetails = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, showToast]);
 
-  const fetchShows = async () => {
+  const fetchShows = useCallback(async () => {
     try {
       const { data } = await axios.get(`${API_BASE}/shows`, { params: { movie: id } });
       setShows(data);
@@ -61,25 +53,33 @@ const MovieDetails = () => {
     } catch (error) {
       console.error('Failed to fetch shows');
     }
-  };
+  }, [id]);
 
-  const fetchSimilarMovies = async () => {
+  const fetchSimilarMovies = useCallback(async () => {
     try {
       const { data } = await axios.get(`${API_BASE}/movies/${id}/similar`);
       setSimilarMovies(data);
     } catch (error) {
       console.error('Failed to fetch similar movies');
     }
-  };
+  }, [id]);
 
-  const addToRecentlyViewed = async () => {
+  const addToRecentlyViewed = useCallback(async () => {
     if (!user) return;
     try {
       await axios.post(`${API_BASE}/users/recently-viewed/${id}`, {}, { headers: getAuthHeaders() });
     } catch (error) {
       console.error('Failed to add to recently viewed');
     }
-  };
+  }, [id, user, getAuthHeaders]);
+
+  useEffect(() => {
+    fetchMovie();
+    fetchShows();
+    fetchSimilarMovies();
+    addToRecentlyViewed();
+    fetchFavorites();
+  }, [fetchMovie, fetchShows, fetchSimilarMovies, addToRecentlyViewed, fetchFavorites]);
 
   const toggleFavorite = async () => {
     if (!user) {
