@@ -5,8 +5,7 @@ import MovieCard from '../components/MovieCard';
 import ThemeContext from '../context/ThemeContext';
 import ToastContext from '../context/ToastContext';
 import AuthContext from '../context/AuthContext';
-
-const API_BASE = 'http://localhost:5000/api';
+import API_BASE from '../config';
 
 const MovieDetails = () => {
   const { id } = useParams();

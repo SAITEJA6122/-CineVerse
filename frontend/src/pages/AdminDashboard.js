@@ -4,8 +4,7 @@ import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 import ThemeContext from '../context/ThemeContext';
 import ToastContext from '../context/ToastContext';
-
-const API_BASE = 'http://localhost:5000/api';
+import API_BASE from '../config';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');

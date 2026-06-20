@@ -1,10 +1,9 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import ToastContext from './ToastContext';
+import API_BASE from '../config';
 
 const AuthContext = createContext();
-
-const API_BASE = 'http://localhost:5000/api';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUserState] = useState(null);
