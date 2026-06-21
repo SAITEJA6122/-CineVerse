@@ -16,15 +16,11 @@ const BookingConfirmation = () => {
 
   const fetchBooking = useCallback(async () => {
     try {
-      const { data } = await axios.get(`${API_BASE}/bookings/mybookings`, { headers: getAuthHeaders() });
-      const foundBooking = data.find(b => b._id === bookingId);
-      if (foundBooking) {
-        setBooking(foundBooking);
-      } else {
-        showToast('Booking not found', 'error');
-      }
+      const { data } = await axios.get(`${API_BASE}/bookings/${bookingId}`, { headers: getAuthHeaders() });
+      setBooking(data);
     } catch (error) {
       console.error('Failed to load booking');
+      showToast('Booking not found', 'error');
     } finally {
       setLoading(false);
     }

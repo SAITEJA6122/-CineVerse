@@ -127,6 +127,23 @@ const cancelBooking = async (req, res) => {
   }
 };
 
+const getBookingById = async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id)
+      .populate('user')
+      .populate('movie')
+      .populate('theater')
+      .populate('show');
+    if (booking && (booking.user._id.toString() === req.user._id.toString())) {
+      res.json(booking);
+    } else {
+      res.status(404).json({ message: 'Booking not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const getAnalytics = async (req, res) => {
   try {
     const totalUsers = await User.countDocuments();
@@ -152,6 +169,7 @@ module.exports = {
   createBooking, 
   getBookings, 
   getUserBookings, 
+  getBookingById,
   cancelBooking,
   getAnalytics
 };
