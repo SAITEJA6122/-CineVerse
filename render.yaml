@@ -1,0 +1,21 @@
+# Render Blueprint for the CineVerse backend (Node/Express API).
+# Deploy: Render Dashboard -> New -> Blueprint -> pick this repo.
+# Render reads this file and provisions the service below.
+services:
+  - type: web
+    name: cineverse-backend
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/movies/trending
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Set these in the Render dashboard (marked sync:false so they are not
+      # stored in the repo). MONGODB_URI = your MongoDB Atlas connection string.
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
