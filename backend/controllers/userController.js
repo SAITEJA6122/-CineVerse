@@ -92,6 +92,10 @@ const removeFromFavorites = async (req, res) => {
 const addToRecentlyViewed = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
+    // Initialize recentlyViewed if it doesn't exist
+    if (!user.recentlyViewed) {
+      user.recentlyViewed = [];
+    }
     user.recentlyViewed = user.recentlyViewed.filter(id => id.toString() !== req.params.movieId);
     user.recentlyViewed.unshift(req.params.movieId);
     user.recentlyViewed = user.recentlyViewed.slice(0, 10);

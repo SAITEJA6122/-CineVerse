@@ -189,7 +189,7 @@ const MovieDetails = () => {
   const getSelectedShowCardStyle = () => {
     return {
       ...showCardStyle,
-      borderColor: '#e94560',
+      border: '1px solid #e94560',
       background: 'rgba(233, 69, 96, 0.1)'
     };
   };
