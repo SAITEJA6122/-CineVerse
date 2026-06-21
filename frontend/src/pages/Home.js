@@ -44,7 +44,7 @@ const Home = () => {
       const { data } = await axios.get(`${API_BASE}/movies/trending`);
       setTrendingMovies(data);
     } catch (error) {
-      console.error('Failed to fetch trending movies');
+      console.error('Failed to fetch trending movies:', error.message, error.response?.data);
     }
   }, []);
 
@@ -53,7 +53,7 @@ const Home = () => {
       const { data } = await axios.get(`${API_BASE}/movies/upcoming`);
       setUpcomingMovies(data);
     } catch (error) {
-      console.error('Failed to fetch upcoming movies');
+      console.error('Failed to fetch upcoming movies:', error.message, error.response?.data);
     }
   }, []);
 
@@ -62,7 +62,7 @@ const Home = () => {
       const { data } = await axios.get(`${API_BASE}/movies/coming-soon`);
       setComingSoonMovies(data);
     } catch (error) {
-      console.error('Failed to fetch coming soon movies');
+      console.error('Failed to fetch coming soon movies:', error.message, error.response?.data);
     }
   }, []);
 
@@ -71,7 +71,7 @@ const Home = () => {
       const { data } = await axios.get(`${API_BASE}/movies/recommended`);
       setRecommendedMovies(data);
     } catch (error) {
-      console.error('Failed to fetch recommended movies');
+      console.error('Failed to fetch recommended movies:', error.message, error.response?.data);
     }
   }, []);
 
