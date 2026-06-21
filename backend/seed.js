@@ -119,6 +119,9 @@ const sampleTheaters = [
   }
 ];
 
+// Helper functions to generate random prices in ranges
+const randomInRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
 const seedDatabase = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
@@ -142,8 +145,8 @@ const seedDatabase = async () => {
 
     // Create sample shows
     const shows = [];
-    const times = ["10:00 AM", "2:00 PM", "6:00 PM", "9:30 PM"];
-    const prices = [250, 350, 450];
+    // 5 show times: morning, afternoon, evening, night, midnight
+    const times = ["10:00 AM", "1:30 PM", "5:00 PM", "8:30 PM", "12:00 AM"];
 
     movies.forEach(movie => {
       theaters.forEach(theater => {
@@ -155,12 +158,20 @@ const seedDatabase = async () => {
             times.forEach(time => {
               // Generate available seats
               const availableSeats = [];
+              const seatTiers = [];
               for (let r = 0; r < screen.seatLayout.rows; r++) {
                 const row = [];
                 for (let s = 0; s < screen.seatLayout.seatsPerRow; s++) {
                   row.push(true);
                 }
                 availableSeats.push(row);
+                // Assign tiers: top rows Silver, middle Gold, bottom Platinum
+                let tier;
+                const rowRatio = (r + 1) / screen.seatLayout.rows;
+                if (rowRatio > 0.8) tier = 'Platinum';
+                else if (rowRatio > 0.5) tier = 'Gold';
+                else tier = 'Silver';
+                seatTiers.push(tier);
               }
 
               shows.push({
@@ -169,7 +180,11 @@ const seedDatabase = async () => {
                 screenNumber: screen.screenNumber,
                 date: date,
                 time: time,
-                price: prices[Math.floor(Math.random() * prices.length)],
+                priceSilver: randomInRange(100, 180),
+                priceGold: randomInRange(190, 280),
+                pricePlatinum: randomInRange(290, 360),
+                price: randomInRange(100, 360), // For backward compatibility
+                seatTiers: seatTiers,
                 availableSeats: availableSeats
               });
             });

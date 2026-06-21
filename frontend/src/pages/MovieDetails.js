@@ -362,9 +362,15 @@ const MovieDetails = () => {
                   <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                     ⏰ {show.time}
                   </p>
-                  <p style={{ fontWeight: '700', color: 'var(--primary)', fontSize: '1.1rem' }}>
-                    💰 ${show.price}
-                  </p>
+                  <div style={{ marginBottom: '0.3rem' }}>
+                    <span style={{ fontWeight: '700', color: '#FFD700' }}>Platinum: ₹{show.pricePlatinum || show.price * 1.5}</span>
+                  </div>
+                  <div style={{ marginBottom: '0.3rem' }}>
+                    <span style={{ fontWeight: '700', color: '#C0C0C0' }}>Gold: ₹{show.priceGold || show.price * 1.25}</span>
+                  </div>
+                  <div>
+                    <span style={{ fontWeight: '700', color: '#A9A9A9' }}>Silver: ₹{show.priceSilver || show.price}</span>
+                  </div>
                 </div>
               ))}
             </div>

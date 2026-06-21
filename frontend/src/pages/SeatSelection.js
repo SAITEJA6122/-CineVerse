@@ -205,7 +205,7 @@ const SeatSelection = () => {
                   key={seatIndex}
                   style={getSeatStyle(seat, selectedSeats.some(s => s.row === rowIndex && s.seat === seatIndex), rowIndex)}
                   onClick={() => seat && toggleSeat(rowIndex, seatIndex)}
-                  title={`${getSeatTier(rowIndex)} - $${getSeatPrice(rowIndex)}`}
+                  title={`${getSeatTier(rowIndex)} - ₹${getSeatPrice(rowIndex)}`}
                 >
                   {seatIndex + 1}
                 </div>
@@ -286,7 +286,7 @@ const SeatSelection = () => {
               marginBottom: '1rem',
               fontWeight: '700'
             }}>
-              Total: ${totalAmount.toFixed(2)}
+              Total: ₹{totalAmount.toFixed(2)}
             </h2>
             <button
               onClick={bookSeats}
