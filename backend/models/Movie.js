@@ -18,7 +18,8 @@ const movieSchema = new mongoose.Schema({
   isComingSoon: { type: Boolean, default: false },
   isRecommended: { type: Boolean, default: false },
   comingSoonDate: { type: Date },
-  similarMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }]
+  similarMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }],
+  viewCount: { type: Number, default: 0 }
 }, { timestamps: true });
 
 // Pre-save hook to auto-generate poster if missing

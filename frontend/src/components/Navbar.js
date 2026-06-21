@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import ThemeContext from '../context/ThemeContext';
+import Search from './Search';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -80,8 +81,13 @@ const Navbar = () => {
   return (
     <nav style={navStyle}>
       <div className="container">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
           <Link to="/" style={logoStyle} onClick={() => setIsMenuOpen(false)}>🎬 CineVerse</Link>
+          
+          {/* Search Component - desktop and mobile */}
+          <div style={{ flex: 1, maxWidth: '400px', minWidth: '200px' }}>
+            <Search />
+          </div>
           
           {/* Desktop Navigation */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }} className="desktop-nav">

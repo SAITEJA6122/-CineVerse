@@ -43,12 +43,72 @@ const getMovies = async (req, res) => {
 
 const getMovieById = async (req, res) => {
   try {
-    const movie = await Movie.findById(req.params.id);
+    const movie = await Movie.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { viewCount: 1 } },
+      { new: true }
+    );
     if (movie) {
       res.json(movie);
     } else {
       res.status(404).json({ message: 'Movie not found' });
     }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const searchMovies = async (req, res) => {
+  try {
+    const searchQuery = req.query.q || '';
+    if (!searchQuery.trim()) {
+      return res.json({ total: 0, movies: [] });
+    }
+    
+    // Search in title, description, genre, cast
+    const searchConditions = {
+      $or: [
+        { title: { $regex: searchQuery, $options: 'i' } },
+        { description: { $regex: searchQuery, $options: 'i' } },
+        { genre: { $in: [new RegExp(searchQuery, 'i')] } },
+        { cast: { $in: [new RegExp(searchQuery, 'i')] } }
+      ]
+    };
+    
+    const movies = await Movie.find(searchConditions);
+    
+    // Weighted scoring
+    const now = new Date();
+    const scoredMovies = movies.map(movie => {
+      let score = 0;
+      
+      // 1. Rating (weight: 40% max)
+      const ratingScore = (movie.rating / 5) * 40;
+      
+      // 2. Release recency (weight: 30% max)
+      const releaseDate = new Date(movie.releaseDate);
+      const daysSinceRelease = Math.max(0, (now - releaseDate) / (1000 * 60 * 60 * 24));
+      // Exponential decay: newer movies get more points
+      const recencyScore = Math.max(0, 30 * Math.exp(-daysSinceRelease / 365));
+      
+      // 3. View count (weight: 20% max)
+      const maxViews = movies.reduce((max, m) => Math.max(max, m.viewCount), 1);
+      const viewScore = (movie.viewCount / maxViews) * 20;
+      
+      // 4. Title match bonus (weight: 10%)
+      const titleMatch = movie.title.toLowerCase().includes(searchQuery.toLowerCase());
+      const titleScore = titleMatch ? 10 : 0;
+      
+      score = ratingScore + recencyScore + viewScore + titleScore;
+      
+      return { ...movie.toObject(), score };
+    });
+    
+    // Sort by score descending and limit to top 10
+    scoredMovies.sort((a, b) => b.score - a.score);
+    const topMovies = scoredMovies.slice(0, 10);
+    
+    res.json({ total: movies.length, movies: topMovies });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -239,5 +299,6 @@ module.exports = {
   getComingSoonMovies,
   getRecommendedMovies,
   getSimilarMovies,
-  addReview
+  addReview,
+  searchMovies
 };

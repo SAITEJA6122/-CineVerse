@@ -12,7 +12,8 @@ const {
   getUpcomingMovies,
   getRecommendedMovies,
   getComingSoonMovies,
-  getSimilarMovies
+  getSimilarMovies,
+  searchMovies
 } = require('../controllers/movieController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
@@ -26,6 +27,7 @@ const optionalUpload = (req, res, next) => {
 };
 
 router.get('/', getMovies);
+router.get('/search', searchMovies);
 router.get('/trending', getTrendingMovies);
 router.get('/upcoming', getUpcomingMovies);
 router.get('/coming-soon', getComingSoonMovies);
