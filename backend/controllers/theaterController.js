@@ -1,13 +1,7 @@
 const Theater = require('../models/Theater');
-const { mockTheaters } = require('../mockData');
-
-let useMockData = process.env.USE_MOCK_DATA !== 'false';
 
 const getTheaters = async (req, res) => {
   try {
-    if (useMockData) {
-      return res.json(mockTheaters);
-    }
     const theaters = await Theater.find();
     res.json(theaters);
   } catch (error) {
@@ -17,13 +11,6 @@ const getTheaters = async (req, res) => {
 
 const getTheaterById = async (req, res) => {
   try {
-    if (useMockData) {
-      const theater = mockTheaters.find(t => t._id === req.params.id);
-      if (theater) {
-        return res.json(theater);
-      }
-      return res.status(404).json({ message: 'Theater not found' });
-    }
     const theater = await Theater.findById(req.params.id);
     if (theater) {
       res.json(theater);

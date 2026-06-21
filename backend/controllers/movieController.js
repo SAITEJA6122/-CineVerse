@@ -1,45 +1,17 @@
 const Movie = require('../models/Movie');
-const { mockMovies } = require('../mockData');
+const { generatePosterUrl } = require('../utils/imageGenerator');
 
-let useMockData = process.env.USE_MOCK_DATA !== 'false';
+const convertToYouTubeEmbed = (url) => {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11)
+    ? `https://www.youtube.com/embed/${match[2]}`
+    : url;
+};
 
 const getMovies = async (req, res) => {
   try {
-    if (useMockData) {
-      let movies = [...mockMovies];
-      const { search, genre, language, minDuration, maxDuration } = req.query;
-      
-      if (search) {
-        movies = movies.filter(m => 
-          m.title.toLowerCase().includes(search.toLowerCase())
-        );
-      }
-      
-      if (genre) {
-        const genresArray = genre.split(',');
-        movies = movies.filter(m => 
-          m.genre.some(g => genresArray.includes(g))
-        );
-      }
-      
-      if (language) {
-        movies = movies.filter(m => m.language === language);
-      }
-      
-      if (minDuration) {
-        movies = movies.filter(m => m.duration >= parseInt(minDuration));
-      }
-      
-      if (maxDuration) {
-        movies = movies.filter(m => m.duration <= parseInt(maxDuration));
-      }
-      
-      return res.json({
-        total: movies.length,
-        movies: movies
-      });
-    }
-    
     let query = {};
     if (req.query.search) {
       query.title = { $regex: req.query.search, $options: 'i' };
@@ -71,13 +43,6 @@ const getMovies = async (req, res) => {
 
 const getMovieById = async (req, res) => {
   try {
-    if (useMockData) {
-      const movie = mockMovies.find(m => m._id === req.params.id);
-      if (movie) {
-        return res.json(movie);
-      }
-      return res.status(404).json({ message: 'Movie not found' });
-    }
     const movie = await Movie.findById(req.params.id);
     if (movie) {
       res.json(movie);
@@ -95,41 +60,29 @@ const createMovie = async (req, res) => {
       title, description, genre, language, duration, releaseDate, cast, 
       trailerUrl, posterUrl, rating, isTrending, isUpcoming, isComingSoon, isRecommended 
     } = req.body;
+
+    const parsedGenres = Array.isArray(genre) ? genre : genre.split(',').map(g => g.trim());
     
-    if (useMockData) {
-      const newMovie = {
-        _id: `movie${Date.now()}`,
-        title,
-        description,
-        genre: Array.isArray(genre) ? genre : genre.split(',').map(g => g.trim()),
-        language,
-        duration: Number(duration),
-        releaseDate,
-        cast: Array.isArray(cast) ? cast : (cast ? cast.split(',').map(c => c.trim()) : []),
-        trailer: trailerUrl || '',
-        poster: posterUrl || 'https://picsum.photos/400/600?random=' + Date.now(),
-        rating: rating || 0,
-        isTrending: isTrending || false,
-        isUpcoming: isUpcoming || false,
-        isComingSoon: isComingSoon || false,
-        isRecommended: isRecommended || false,
-        reviews: [],
-        similarMovies: []
-      };
-      mockMovies.push(newMovie);
-      return res.status(201).json(newMovie);
+    let finalPoster = posterUrl;
+    if (!finalPoster || finalPoster.trim() === '') {
+      try {
+        finalPoster = generatePosterUrl(title, parsedGenres);
+      } catch (error) {
+        console.warn('Failed to auto-generate poster, using fallback:', error.message);
+        finalPoster = 'https://picsum.photos/400/600?random=' + Date.now();
+      }
     }
     
-    const poster = req.file ? `/uploads/${req.file.filename}` : (posterUrl || '');
+    const poster = req.file ? `/uploads/${req.file.filename}` : finalPoster;
     const movie = await Movie.create({
       title,
       description,
-      genre: Array.isArray(genre) ? genre : genre.split(',').map(g => g.trim()),
+      genre: parsedGenres,
       language,
       duration,
       releaseDate,
       cast: Array.isArray(cast) ? cast : (cast ? cast.split(',').map(c => c.trim()) : []),
-      trailer: trailerUrl,
+      trailer: convertToYouTubeEmbed(trailerUrl),
       poster,
       rating,
       isTrending,
@@ -150,52 +103,42 @@ const updateMovie = async (req, res) => {
       trailerUrl, posterUrl, rating, isTrending, isUpcoming, isComingSoon, isRecommended 
     } = req.body;
     
-    if (useMockData) {
-      const movieIndex = mockMovies.findIndex(m => m._id === req.params.id);
-      if (movieIndex === -1) {
-        return res.status(404).json({ message: 'Movie not found' });
-      }
-      
-      const updatedMovie = {
-        ...mockMovies[movieIndex],
-        title: title || mockMovies[movieIndex].title,
-        description: description || mockMovies[movieIndex].description,
-        language: language || mockMovies[movieIndex].language,
-        duration: duration ? Number(duration) : mockMovies[movieIndex].duration,
-        releaseDate: releaseDate || mockMovies[movieIndex].releaseDate,
-        rating: rating !== undefined ? Number(rating) : mockMovies[movieIndex].rating,
-        isTrending: isTrending !== undefined ? isTrending : mockMovies[movieIndex].isTrending,
-        isUpcoming: isUpcoming !== undefined ? isUpcoming : mockMovies[movieIndex].isUpcoming,
-        isComingSoon: isComingSoon !== undefined ? isComingSoon : mockMovies[movieIndex].isComingSoon,
-        isRecommended: isRecommended !== undefined ? isRecommended : mockMovies[movieIndex].isRecommended
-      };
-      
-      if (genre) updatedMovie.genre = Array.isArray(genre) ? genre : genre.split(',').map(g => g.trim());
-      if (cast) updatedMovie.cast = Array.isArray(cast) ? cast : cast.split(',').map(c => c.trim());
-      if (trailerUrl) updatedMovie.trailer = trailerUrl;
-      if (posterUrl) updatedMovie.poster = posterUrl;
-      
-      mockMovies[movieIndex] = updatedMovie;
-      return res.json(updatedMovie);
-    }
-    
     const updateData = {
       title,
       description,
       language,
       duration,
       releaseDate,
-      trailer: trailerUrl,
+      trailer: convertToYouTubeEmbed(trailerUrl),
       rating,
       isTrending,
       isUpcoming,
       isComingSoon,
       isRecommended
     };
+    
     if (genre) updateData.genre = Array.isArray(genre) ? genre : genre.split(',').map(g => g.trim());
     if (cast) updateData.cast = Array.isArray(cast) ? cast : cast.split(',').map(c => c.trim());
-    if (posterUrl) updateData.poster = posterUrl;
-    if (req.file) updateData.poster = `/uploads/${req.file.filename}`;
+    
+    if (req.file) {
+      updateData.poster = `/uploads/${req.file.filename}`;
+    } else if (posterUrl && posterUrl.trim() !== '') {
+      updateData.poster = posterUrl;
+    } else {
+      const currentMovie = await Movie.findById(req.params.id);
+      if (!currentMovie.poster || currentMovie.poster.trim() === '') {
+        const parsedGenres = genre 
+          ? (Array.isArray(genre) ? genre : genre.split(',').map(g => g.trim())) 
+          : currentMovie.genre;
+        const finalTitle = title || currentMovie.title;
+        try {
+          updateData.poster = generatePosterUrl(finalTitle, parsedGenres);
+        } catch (error) {
+          console.warn('Failed to auto-generate poster, using fallback:', error.message);
+          updateData.poster = 'https://picsum.photos/400/600?random=' + Date.now();
+        }
+      }
+    }
     
     const movie = await Movie.findByIdAndUpdate(req.params.id, updateData, { new: true });
     if (movie) {
@@ -210,15 +153,6 @@ const updateMovie = async (req, res) => {
 
 const deleteMovie = async (req, res) => {
   try {
-    if (useMockData) {
-      const movieIndex = mockMovies.findIndex(m => m._id === req.params.id);
-      if (movieIndex === -1) {
-        return res.status(404).json({ message: 'Movie not found' });
-      }
-      mockMovies.splice(movieIndex, 1);
-      return res.json({ message: 'Movie deleted' });
-    }
-    
     const movie = await Movie.findByIdAndDelete(req.params.id);
     if (movie) {
       res.json({ message: 'Movie deleted' });
@@ -232,9 +166,6 @@ const deleteMovie = async (req, res) => {
 
 const getTrendingMovies = async (req, res) => {
   try {
-    if (useMockData) {
-      return res.json(mockMovies.filter(m => m.isTrending));
-    }
     const movies = await Movie.find({ isTrending: true });
     res.json(movies);
   } catch (error) {
@@ -244,9 +175,6 @@ const getTrendingMovies = async (req, res) => {
 
 const getUpcomingMovies = async (req, res) => {
   try {
-    if (useMockData) {
-      return res.json(mockMovies.filter(m => m.isUpcoming));
-    }
     const movies = await Movie.find({ isUpcoming: true });
     res.json(movies);
   } catch (error) {
@@ -256,9 +184,6 @@ const getUpcomingMovies = async (req, res) => {
 
 const getComingSoonMovies = async (req, res) => {
   try {
-    if (useMockData) {
-      return res.json(mockMovies.filter(m => m.isComingSoon));
-    }
     const movies = await Movie.find({ isComingSoon: true });
     res.json(movies);
   } catch (error) {
@@ -268,10 +193,6 @@ const getComingSoonMovies = async (req, res) => {
 
 const getRecommendedMovies = async (req, res) => {
   try {
-    if (useMockData) {
-      const recommended = mockMovies.filter(m => m.isRecommended);
-      return res.json(recommended.length > 0 ? recommended : mockMovies.slice(0, 4));
-    }
     const movies = await Movie.find({ isRecommended: true });
     res.json(movies.length > 0 ? movies : await Movie.find().sort({ rating: -1 }).limit(4));
   } catch (error) {
@@ -281,14 +202,6 @@ const getRecommendedMovies = async (req, res) => {
 
 const getSimilarMovies = async (req, res) => {
   try {
-    if (useMockData) {
-      const movie = mockMovies.find(m => m._id === req.params.id);
-      if (movie && movie.similarMovies) {
-        const similar = movie.similarMovies.map(id => mockMovies.find(m => m._id === id)).filter(Boolean);
-        return res.json(similar);
-      }
-      return res.json([]);
-    }
     const movie = await Movie.findById(req.params.id);
     if (movie && movie.similarMovies) {
       const similar = await Movie.find({ _id: { $in: movie.similarMovies } });
@@ -302,20 +215,6 @@ const getSimilarMovies = async (req, res) => {
 
 const addReview = async (req, res) => {
   try {
-    if (useMockData) {
-      const { user, rating, comment } = req.body;
-      const movie = mockMovies.find(m => m._id === req.params.id);
-      if (movie) {
-        movie.reviews.push({
-          user,
-          rating,
-          comment,
-          date: new Date().toISOString().split('T')[0]
-        });
-        return res.json(movie);
-      }
-      return res.status(404).json({ message: 'Movie not found' });
-    }
     const movie = await Movie.findById(req.params.id);
     if (movie) {
       movie.reviews.push(req.body);

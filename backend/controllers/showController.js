@@ -1,20 +1,7 @@
 const Show = require('../models/Show');
-const { mockShows, mockMovies, mockTheaters } = require('../mockData');
-
-let useMockData = process.env.USE_MOCK_DATA !== 'false';
 
 const getShows = async (req, res) => {
   try {
-    if (useMockData) {
-      // Add populated movie and theater to mock shows
-      const populatedShows = mockShows.map(show => {
-        const movie = mockMovies.find(m => m._id === show.movie);
-        const theater = mockTheaters.find(t => t._id === show.theater);
-        return { ...show, movie, theater };
-      });
-      return res.json(populatedShows);
-    }
-
     const { movie, theater, date } = req.query;
     let query = {};
     if (movie) query.movie = movie;
@@ -29,15 +16,6 @@ const getShows = async (req, res) => {
 
 const getShowById = async (req, res) => {
   try {
-    if (useMockData) {
-      const show = mockShows.find(s => s._id === req.params.id);
-      if (show) {
-        const movie = mockMovies.find(m => m._id === show.movie);
-        const theater = mockTheaters.find(t => t._id === show.theater);
-        return res.json({ ...show, movie, theater });
-      }
-    }
-
     const show = await Show.findById(req.params.id).populate('movie').populate('theater');
     if (show) {
       res.json(show);

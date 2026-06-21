@@ -1,17 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const { mockUsers } = require('../mockData');
-
-let useMockData = process.env.USE_MOCK_DATA !== 'false';
 
 const protect = async (req, res, next) => {
-  if (useMockData) {
-    // For mock data, we'll automatically set the user
-    req.user = mockUsers[0];
-    next();
-    return;
-  }
-
   let token;
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
@@ -29,11 +19,6 @@ const protect = async (req, res, next) => {
 };
 
 const admin = (req, res, next) => {
-  if (useMockData) {
-    // Allow admin access in mock mode for testing
-    next();
-    return;
-  }
   if (req.user && req.user.role === 'admin') {
     next();
   } else {

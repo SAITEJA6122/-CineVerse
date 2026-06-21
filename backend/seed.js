@@ -106,15 +106,15 @@ const sampleTheaters = [
     name: "CineVerse Downtown",
     location: "123 Main St, Downtown",
     screens: [
-      { name: "Screen 1", capacity: 150, seatLayout: { rows: 15, seatsPerRow: 10 } },
-      { name: "Screen 2", capacity: 100, seatLayout: { rows: 10, seatsPerRow: 10 } }
+      { screenNumber: 1, name: "Screen 1", seatLayout: { rows: 15, seatsPerRow: 10 } },
+      { screenNumber: 2, name: "Screen 2", seatLayout: { rows: 10, seatsPerRow: 10 } }
     ]
   },
   {
     name: "CineVerse Mall",
     location: "456 Shopping Mall Rd",
     screens: [
-      { name: "Screen A", capacity: 200, seatLayout: { rows: 20, seatsPerRow: 10 } }
+      { screenNumber: 1, name: "Screen A", seatLayout: { rows: 20, seatsPerRow: 10 } }
     ]
   }
 ];
@@ -166,7 +166,7 @@ const seedDatabase = async () => {
               shows.push({
                 movie: movie._id,
                 theater: theater._id,
-                screen: screen._id,
+                screenNumber: screen.screenNumber,
                 date: date,
                 time: time,
                 price: prices[Math.floor(Math.random() * prices.length)],
@@ -182,21 +182,19 @@ const seedDatabase = async () => {
     console.log('Inserted shows');
 
     // Create admin user
-    const hashedPassword = await bcrypt.hash('admin123', 10);
     const adminUser = await User.create({
       name: "Admin User",
       email: "admin@cineverse.com",
-      password: hashedPassword,
+      password: "admin123",
       role: "admin"
     });
     console.log('Created admin user');
 
     // Create regular user
-    const userPassword = await bcrypt.hash('user123', 10);
     const regularUser = await User.create({
       name: "Test User",
       email: "user@cineverse.com",
-      password: userPassword,
+      password: "user123",
       role: "user"
     });
     console.log('Created test user');

@@ -9,11 +9,15 @@ import API_BASE from '../config';
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [movies, setMovies] = useState([]);
+  const [theaters, setTheaters] = useState([]);
+  const [shows, setShows] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState({
     dashboard: true,
     movies: true,
+    theaters: true,
+    shows: true,
     bookings: true
   });
   const [formData, setFormData] = useState({
@@ -31,39 +35,75 @@ const AdminDashboard = () => {
     isComingSoon: false,
     isRecommended: false
   });
+  const [theaterFormData, setTheaterFormData] = useState({
+    name: '',
+    location: '',
+    screens: [{ screenNumber: 1, seatLayout: { rows: 10, seatsPerRow: 10 } }]
+  });
+  const [showFormData, setShowFormData] = useState({
+    movie: '',
+    theater: '',
+    screenNumber: 1,
+    date: '',
+    time: '',
+    price: ''
+  });
   const [editingMovie, setEditingMovie] = useState(null);
+  const [editingTheater, setEditingTheater] = useState(null);
+  const [editingShow, setEditingShow] = useState(null);
   const { user, getAuthHeaders } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
   const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
   const hasLoadedDashboard = useRef(false);
   const hasLoadedMovies = useRef(false);
+  const hasLoadedTheaters = useRef(false);
+  const hasLoadedShows = useRef(false);
   const hasLoadedBookings = useRef(false);
 
   const fetchTabData = useCallback(async (tab) => {
     try {
       if (tab === 'dashboard') {
-        if (hasLoadedDashboard.current) return; // Already loaded
+        if (hasLoadedDashboard.current) return;
         setLoading(prev => ({ ...prev, dashboard: true }));
-        const [moviesRes, , analyticsRes] = await Promise.all([
+        const [moviesRes, analyticsRes] = await Promise.all([
           axios.get(`${API_BASE}/movies`),
-          axios.get(`${API_BASE}/theaters`),
           axios.get(`${API_BASE}/bookings/analytics`, { headers: getAuthHeaders() })
         ]);
-        // moviesRes.data is { total: X, movies: [] }
         setMovies(moviesRes.data.movies || []);
         setAnalytics(analyticsRes.data);
         hasLoadedDashboard.current = true;
         setLoading(prev => ({ ...prev, dashboard: false }));
       } else if (tab === 'movies') {
-        if (hasLoadedMovies.current) return; // Already loaded
+        if (hasLoadedMovies.current) return;
         setLoading(prev => ({ ...prev, movies: true }));
         const moviesRes = await axios.get(`${API_BASE}/movies`);
         setMovies(moviesRes.data.movies || []);
         hasLoadedMovies.current = true;
         setLoading(prev => ({ ...prev, movies: false }));
+      } else if (tab === 'theaters') {
+        if (hasLoadedTheaters.current) return;
+        setLoading(prev => ({ ...prev, theaters: true }));
+        const theatersRes = await axios.get(`${API_BASE}/theaters`);
+        setTheaters(theatersRes.data || []);
+        hasLoadedTheaters.current = true;
+        setLoading(prev => ({ ...prev, theaters: false }));
+      } else if (tab === 'shows') {
+        setLoading(prev => ({ ...prev, shows: true }));
+        const [showsRes, moviesRes, theatersRes] = await Promise.all([
+          axios.get(`${API_BASE}/shows`),
+          axios.get(`${API_BASE}/movies`),
+          axios.get(`${API_BASE}/theaters`)
+        ]);
+        setShows(showsRes.data || []);
+        setMovies(moviesRes.data.movies || []);
+        setTheaters(theatersRes.data || []);
+        hasLoadedShows.current = true;
+        hasLoadedMovies.current = true;
+        hasLoadedTheaters.current = true;
+        setLoading(prev => ({ ...prev, shows: false }));
       } else if (tab === 'bookings') {
-        if (hasLoadedBookings.current) return; // Already loaded
+        if (hasLoadedBookings.current) return;
         setLoading(prev => ({ ...prev, bookings: true }));
         const bookingsRes = await axios.get(`${API_BASE}/bookings`, { headers: getAuthHeaders() });
         setBookings(bookingsRes.data || []);
@@ -91,7 +131,6 @@ const AdminDashboard = () => {
       const dataToSend = {
         ...formData,
         duration: Number(formData.duration)
-        // Send genre and cast as strings, let backend split them
       };
       if (editingMovie) {
         await axios.put(`${API_BASE}/movies/${editingMovie._id}`, dataToSend, { headers: getAuthHeaders() });
@@ -101,9 +140,8 @@ const AdminDashboard = () => {
         showToast('Movie added', 'success');
       }
       resetForm();
-      hasLoadedMovies.current = false; // Reset to allow reloading
+      hasLoadedMovies.current = false;
       hasLoadedDashboard.current = false;
-      // Refresh movies list
       const moviesRes = await axios.get(`${API_BASE}/movies`);
       setMovies(moviesRes.data.movies || []);
     } catch (error) {
@@ -112,18 +150,85 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleTheaterSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingTheater) {
+        await axios.put(`${API_BASE}/theaters/${editingTheater._id}`, theaterFormData, { headers: getAuthHeaders() });
+        showToast('Theater updated', 'success');
+      } else {
+        await axios.post(`${API_BASE}/theaters`, theaterFormData, { headers: getAuthHeaders() });
+        showToast('Theater added', 'success');
+      }
+      resetTheaterForm();
+      hasLoadedTheaters.current = false;
+      const theatersRes = await axios.get(`${API_BASE}/theaters`);
+      setTheaters(theatersRes.data || []);
+    } catch (error) {
+      console.error('Failed to save theater:', error.response?.data || error.message);
+      showToast(`Failed to save theater: ${error.response?.data?.message || error.message}`, 'error');
+    }
+  };
+
+  const handleShowSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingShow) {
+        await axios.put(`${API_BASE}/shows/${editingShow._id}`, showFormData, { headers: getAuthHeaders() });
+        showToast('Show updated', 'success');
+      } else {
+        await axios.post(`${API_BASE}/shows`, showFormData, { headers: getAuthHeaders() });
+        showToast('Show added', 'success');
+      }
+      resetShowForm();
+      hasLoadedShows.current = false;
+      const showsRes = await axios.get(`${API_BASE}/shows`);
+      setShows(showsRes.data || []);
+    } catch (error) {
+      console.error('Failed to save show:', error.response?.data || error.message);
+      showToast(`Failed to save show: ${error.response?.data?.message || error.message}`, 'error');
+    }
+  };
+
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this movie?')) {
       try {
         await axios.delete(`${API_BASE}/movies/${id}`, { headers: getAuthHeaders() });
         showToast('Movie deleted', 'success');
-        hasLoadedMovies.current = false; // Reset to allow reloading
+        hasLoadedMovies.current = false;
         hasLoadedDashboard.current = false;
-        // Refresh movies list
         const moviesRes = await axios.get(`${API_BASE}/movies`);
         setMovies(moviesRes.data.movies || []);
       } catch (error) {
         showToast('Failed to delete movie', 'error');
+      }
+    }
+  };
+
+  const handleDeleteTheater = async (id) => {
+    if (window.confirm('Are you sure you want to delete this theater?')) {
+      try {
+        await axios.delete(`${API_BASE}/theaters/${id}`, { headers: getAuthHeaders() });
+        showToast('Theater deleted', 'success');
+        hasLoadedTheaters.current = false;
+        const theatersRes = await axios.get(`${API_BASE}/theaters`);
+        setTheaters(theatersRes.data || []);
+      } catch (error) {
+        showToast('Failed to delete theater', 'error');
+      }
+    }
+  };
+
+  const handleDeleteShow = async (id) => {
+    if (window.confirm('Are you sure you want to delete this show?')) {
+      try {
+        await axios.delete(`${API_BASE}/shows/${id}`, { headers: getAuthHeaders() });
+        showToast('Show deleted', 'success');
+        hasLoadedShows.current = false;
+        const showsRes = await axios.get(`${API_BASE}/shows`);
+        setShows(showsRes.data || []);
+      } catch (error) {
+        showToast('Failed to delete show', 'error');
       }
     }
   };
@@ -148,6 +253,29 @@ const AdminDashboard = () => {
     setActiveTab('movies');
   };
 
+  const handleEditTheater = (theater) => {
+    setEditingTheater(theater);
+    setTheaterFormData({
+      name: theater.name,
+      location: theater.location,
+      screens: theater.screens
+    });
+    setActiveTab('theaters');
+  };
+
+  const handleEditShow = (show) => {
+    setEditingShow(show);
+    setShowFormData({
+      movie: show.movie._id,
+      theater: show.theater._id,
+      screenNumber: show.screenNumber,
+      date: new Date(show.date).toISOString().split('T')[0],
+      time: show.time,
+      price: String(show.price)
+    });
+    setActiveTab('shows');
+  };
+
   const resetForm = () => {
     setFormData({
       title: '',
@@ -165,6 +293,27 @@ const AdminDashboard = () => {
       isRecommended: false
     });
     setEditingMovie(null);
+  };
+
+  const resetTheaterForm = () => {
+    setTheaterFormData({
+      name: '',
+      location: '',
+      screens: [{ screenNumber: 1, seatLayout: { rows: 10, seatsPerRow: 10 } }]
+    });
+    setEditingTheater(null);
+  };
+
+  const resetShowForm = () => {
+    setShowFormData({
+      movie: '',
+      theater: '',
+      screenNumber: 1,
+      date: '',
+      time: '',
+      price: ''
+    });
+    setEditingShow(null);
   };
 
   const getTabStyle = (active) => {
@@ -263,16 +412,22 @@ const AdminDashboard = () => {
       </h1>
 
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-        <button style={getTabStyle(activeTab === 'dashboard')} onClick={() => setActiveTab('dashboard')}>
-          Dashboard
-        </button>
-        <button style={getTabStyle(activeTab === 'movies')} onClick={() => { setActiveTab('movies'); resetForm(); }}>
-          Movies
-        </button>
-        <button style={getTabStyle(activeTab === 'bookings')} onClick={() => setActiveTab('bookings')}>
-          Bookings
-        </button>
-      </div>
+          <button style={getTabStyle(activeTab === 'dashboard')} onClick={() => setActiveTab('dashboard')}>
+            Dashboard
+          </button>
+          <button style={getTabStyle(activeTab === 'movies')} onClick={() => { setActiveTab('movies'); resetForm(); }}>
+            Movies
+          </button>
+          <button style={getTabStyle(activeTab === 'theaters')} onClick={() => { setActiveTab('theaters'); resetTheaterForm(); }}>
+            Theaters
+          </button>
+          <button style={getTabStyle(activeTab === 'shows')} onClick={() => { setActiveTab('shows'); resetShowForm(); }}>
+            Shows
+          </button>
+          <button style={getTabStyle(activeTab === 'bookings')} onClick={() => setActiveTab('bookings')}>
+            Bookings
+          </button>
+        </div>
 
       {activeTab === 'dashboard' && (
         loading.dashboard ? (
@@ -415,6 +570,175 @@ const AdminDashboard = () => {
                           <button onClick={() => handleDelete(movie._id)} style={getSmallDangerButtonStyle()}>Delete</button>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'theaters' && (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+          <div style={getCardStyle()}>
+            <h2 style={{ color: theme === 'dark' ? '#f0f0f0' : '#333', marginBottom: '1.5rem' }}>
+              {editingTheater ? 'Edit Theater' : 'Add New Theater'}
+            </h2>
+            <form onSubmit={handleTheaterSubmit}>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Theater Name</label>
+                <input type="text" value={theaterFormData.name} onChange={(e) => setTheaterFormData({ ...theaterFormData, name: e.target.value })} required style={getInputStyle()} />
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Location</label>
+                <input type="text" value={theaterFormData.location} onChange={(e) => setTheaterFormData({ ...theaterFormData, location: e.target.value })} required style={getInputStyle()} />
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Screens (JSON)</label>
+                <textarea 
+                  value={JSON.stringify(theaterFormData.screens, null, 2)} 
+                  onChange={(e) => {
+                    try {
+                      const parsed = JSON.parse(e.target.value);
+                      setTheaterFormData({ ...theaterFormData, screens: parsed });
+                    } catch (err) {
+                      // Ignore invalid JSON while typing
+                    }
+                  }} 
+                  style={{ ...getInputStyle(), minHeight: '150px', fontFamily: 'monospace' }}
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <button type="submit" style={getPrimaryButtonStyle()}>
+                  {editingTheater ? 'Update Theater' : 'Add Theater'}
+                </button>
+                {editingTheater && <button type="button" onClick={resetTheaterForm} style={getSecondaryButtonStyle()}>Cancel</button>}
+              </div>
+            </form>
+          </div>
+          <div>
+            <h2 style={{ color: theme === 'dark' ? '#f0f0f0' : '#333', marginBottom: '1.5rem' }}>Manage Theaters</h2>
+            {loading.theaters ? (
+              <div style={{ textAlign: 'center', padding: '2rem' }}>Loading theaters...</div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                {theaters.map(theater => (
+                  <div key={theater._id} style={{ ...getCardStyle(), padding: '1.2rem' }}>
+                    <h3 style={{ margin: '0 0 0.5rem', color: theme === 'dark' ? '#f0f0f0' : '#333' }}>{theater.name}</h3>
+                    <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.5rem' }}>{theater.location}</p>
+                    <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.8rem' }}>
+                      Screens: {theater.screens?.length || 0}
+                    </p>
+                    <div style={{ display: 'flex', gap: '0.6rem' }}>
+                      <button onClick={() => handleEditTheater(theater)} style={getSmallPrimaryButtonStyle()}>Edit</button>
+                      <button onClick={() => handleDeleteTheater(theater._id)} style={getSmallDangerButtonStyle()}>Delete</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'shows' && (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+          <div style={getCardStyle()}>
+            <h2 style={{ color: theme === 'dark' ? '#f0f0f0' : '#333', marginBottom: '1.5rem' }}>
+              {editingShow ? 'Edit Show' : 'Add New Show'}
+            </h2>
+            <form onSubmit={handleShowSubmit}>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Movie</label>
+                <select 
+                  value={showFormData.movie} 
+                  onChange={(e) => setShowFormData({ ...showFormData, movie: e.target.value })} 
+                  required 
+                  style={getInputStyle()}
+                >
+                  <option value="">Select Movie</option>
+                  {movies.map(movie => (
+                    <option key={movie._id} value={movie._id}>{movie.title}</option>
+                  ))}
+                </select>
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Theater</label>
+                <select 
+                  value={showFormData.theater} 
+                  onChange={(e) => {
+                    const theater = theaters.find(t => t._id === e.target.value);
+                    setShowFormData({ 
+                      ...showFormData, 
+                      theater: e.target.value, 
+                      screenNumber: theater?.screens?.[0]?.screenNumber || 1 
+                    });
+                  }} 
+                  required 
+                  style={getInputStyle()}
+                >
+                  <option value="">Select Theater</option>
+                  {theaters.map(theater => (
+                    <option key={theater._id} value={theater._id}>{theater.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Screen Number</label>
+                  <input 
+                    type="number" 
+                    value={showFormData.screenNumber} 
+                    onChange={(e) => setShowFormData({ ...showFormData, screenNumber: Number(e.target.value) })} 
+                    required 
+                    style={getInputStyle()} 
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Price</label>
+                  <input 
+                    type="number" 
+                    value={showFormData.price} 
+                    onChange={(e) => setShowFormData({ ...showFormData, price: e.target.value })} 
+                    required 
+                    style={getInputStyle()} 
+                  />
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Date</label>
+                  <input type="date" value={showFormData.date} onChange={(e) => setShowFormData({ ...showFormData, date: e.target.value })} required style={getInputStyle()} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Time</label>
+                  <input type="text" value={showFormData.time} onChange={(e) => setShowFormData({ ...showFormData, time: e.target.value })} required style={getInputStyle()} placeholder="e.g. 7:00 PM" />
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <button type="submit" style={getPrimaryButtonStyle()}>
+                  {editingShow ? 'Update Show' : 'Add Show'}
+                </button>
+                {editingShow && <button type="button" onClick={resetShowForm} style={getSecondaryButtonStyle()}>Cancel</button>}
+              </div>
+            </form>
+          </div>
+          <div>
+            <h2 style={{ color: theme === 'dark' ? '#f0f0f0' : '#333', marginBottom: '1.5rem' }}>Manage Shows</h2>
+            {loading.shows ? (
+              <div style={{ textAlign: 'center', padding: '2rem' }}>Loading shows...</div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                {shows.map(show => (
+                  <div key={show._id} style={{ ...getCardStyle(), padding: '1.2rem' }}>
+                    <h3 style={{ margin: '0 0 0.5rem', color: theme === 'dark' ? '#f0f0f0' : '#333' }}>{show.movie?.title}</h3>
+                    <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.3rem' }}>{show.theater?.name} • Screen {show.screenNumber}</p>
+                    <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.3rem' }}>{new Date(show.date).toLocaleDateString()} • {show.time}</p>
+                    <p style={{ color: '#e94560', fontWeight: 'bold', marginBottom: '0.8rem' }}>Price: ${show.price}</p>
+                    <div style={{ display: 'flex', gap: '0.6rem' }}>
+                      <button onClick={() => handleEditShow(show)} style={getSmallPrimaryButtonStyle()}>Edit</button>
+                      <button onClick={() => handleDeleteShow(show._id)} style={getSmallDangerButtonStyle()}>Delete</button>
                     </div>
                   </div>
                 ))}
