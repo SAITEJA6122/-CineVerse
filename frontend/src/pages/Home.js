@@ -11,7 +11,6 @@ const Home = () => {
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [comingSoonMovies, setComingSoonMovies] = useState([]);
   const [recommendedMovies, setRecommendedMovies] = useState([]);
-  const [search, setSearch] = useState('');
   const [genreFilter, setGenreFilter] = useState('');
   const [languageFilter, setLanguageFilter] = useState('');
   const [minDuration, setMinDuration] = useState('');
@@ -27,7 +26,6 @@ const Home = () => {
     try {
       setLoading(true);
       const params = {};
-      if (search) params.search = search;
       if (genreFilter) params.genre = genreFilter;
       if (languageFilter) params.language = languageFilter;
       if (minDuration) params.minDuration = minDuration;
@@ -39,7 +37,7 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
-  }, [search, genreFilter, languageFilter, minDuration, maxDuration, showToast]);
+  }, [genreFilter, languageFilter, minDuration, maxDuration, showToast]);
 
   const fetchTrending = useCallback(async () => {
     try {
@@ -93,7 +91,7 @@ const Home = () => {
       fetchMovies();
     }, 300);
     return () => clearTimeout(timeoutId);
-  }, [search, genreFilter, languageFilter, minDuration, maxDuration, fetchMovies]);
+  }, [genreFilter, languageFilter, minDuration, maxDuration, fetchMovies]);
 
   const CountdownTimer = ({ targetDate }) => {
     const [timeLeft, setTimeLeft] = useState('');
@@ -283,7 +281,7 @@ const Home = () => {
 
         <section style={sectionStyle}>
           <h2 style={sectionHeadingStyle}>
-            {search || genreFilter || languageFilter || minDuration || maxDuration ? '🔍 Search Results' : '🎥 All Movies'}
+            {genreFilter || languageFilter || minDuration || maxDuration ? '🔍 Filter Results' : '🎥 All Movies'}
           </h2>
           
           {loading ? (

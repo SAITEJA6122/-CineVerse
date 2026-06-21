@@ -13,15 +13,7 @@ const Search = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const searchRef = useRef(null);
   const inputRef = useRef(null);
-
-  // Debounce function
-  const debounce = (func, delay) => {
-    let timeoutId;
-    return (...args) => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => func(...args), delay);
-    };
-  };
+  const timeoutRef = useRef(null);
 
   const performSearch = useCallback(async (searchQuery) => {
     if (!searchQuery.trim()) {
@@ -47,11 +39,20 @@ const Search = () => {
     }
   }, []);
 
-  const debouncedSearch = useCallback(debounce(performSearch, 300), [performSearch]);
-
   useEffect(() => {
-    debouncedSearch(query);
-  }, [query, debouncedSearch]);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      performSearch(query);
+    }, 300);
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [query, performSearch]);
 
   // Handle clicks outside to close dropdown
   useEffect(() => {
