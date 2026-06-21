@@ -80,7 +80,6 @@ main/
 │   │   └── authMiddleware.js   # JWT authentication middleware
 │   ├── uploads/                # Uploaded file storage
 │   ├── seed.js                 # Seeds MongoDB with sample data
-│   ├── .env                    # Environment variables (create this)
 │   ├── server.js               # Express server entry point
 │   └── package.json            # Backend dependencies
 └── frontend/
@@ -254,7 +253,7 @@ The "Network Error" messages disappear once the deployed frontend can reach the 
 4. View booking analytics
 5. Add/edit movie information
 
-To create an admin user, you can manually update a user's `role` to `"admin"` in the MongoDB database (if not using mock data).
+To create an admin user, manually update a user's `role` to `"admin"` in the MongoDB database.
 
 ## 📱 Responsive Design
 
@@ -295,8 +294,6 @@ The app is fully responsive:
 This project is open source and available under the MIT License.
 
 ## 🤝 Contributing
-Admin : admin@cineverse.com / admin123
-
 Contributions, issues, and feature requests are welcome!
 
 ---
