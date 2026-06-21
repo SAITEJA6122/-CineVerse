@@ -319,24 +319,25 @@ const AdminDashboard = () => {
   const getTabStyle = (active) => {
     return {
       padding: '1rem 2rem',
-      background: active ? '#e94560' : (theme === 'dark' ? '#1e1e3a' : '#f0f0f0'),
-      color: active ? 'white' : (theme === 'dark' ? '#f0f0f0' : '#333'),
+      background: active ? 'linear-gradient(135deg, var(--primary), var(--primary-hover))' : (theme === 'dark' ? 'var(--surface-dark)' : 'var(--surface)'),
+      color: active ? 'white' : 'inherit',
       border: 'none',
-      borderRadius: '8px',
+      borderRadius: 'var(--radius-md)',
       cursor: 'pointer',
       fontWeight: '600',
       fontSize: '1rem',
-      transition: 'all 0.2s ease'
+      transition: 'all 0.2s ease',
+      boxShadow: active ? '0 4px 12px rgba(233, 69, 96, 0.3)' : 'none'
     };
   };
 
   const getCardStyle = () => {
     return {
-      background: theme === 'dark' ? '#1e1e3a' : '#ffffff',
-      borderRadius: '16px',
+      background: theme === 'dark' ? 'var(--surface-dark)' : 'var(--surface)',
+      borderRadius: 'var(--radius-lg)',
       padding: '2rem',
-      border: '1px solid ' + (theme === 'dark' ? '#3a3a5a' : '#e0e0e0'),
-      boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
+      border: `1px solid ${theme === 'dark' ? 'var(--border-dark)' : 'var(--border)'}`,
+      boxShadow: 'var(--shadow-md)'
     };
   };
 
@@ -344,20 +345,26 @@ const AdminDashboard = () => {
     return {
       width: '100%',
       padding: '0.8rem',
-      borderRadius: '6px',
-      border: '1px solid ' + (theme === 'dark' ? '#3a3a5a' : '#e0e0e0')
+      borderRadius: 'var(--radius-md)',
+      border: `1px solid ${theme === 'dark' ? 'var(--border-dark)' : 'var(--border)'}`,
+      background: theme === 'dark' ? 'var(--bg-dark)' : 'var(--bg)',
+      color: 'inherit',
+      outline: 'none',
+      transition: 'border-color 0.2s ease'
     };
   };
 
   const getPrimaryButtonStyle = () => {
     return {
       padding: '0.8rem 1.5rem',
-      background: '#e94560',
+      background: 'linear-gradient(135deg, var(--primary), var(--primary-hover))',
       color: 'white',
       border: 'none',
-      borderRadius: '6px',
+      borderRadius: 'var(--radius-md)',
       cursor: 'pointer',
-      fontWeight: '600'
+      fontWeight: '600',
+      transition: 'all 0.2s ease',
+      boxShadow: '0 4px 12px rgba(233, 69, 96, 0.3)'
     };
   };
 
@@ -365,66 +372,69 @@ const AdminDashboard = () => {
     return {
       padding: '0.8rem 1.5rem',
       background: 'transparent',
-      color: theme === 'dark' ? '#f0f0f0' : '#333',
-      border: '1px solid ' + (theme === 'dark' ? '#3a3a5a' : '#e0e0e0'),
-      borderRadius: '6px',
-      cursor: 'pointer'
+      color: 'inherit',
+      border: `1px solid ${theme === 'dark' ? 'var(--border-dark)' : 'var(--border)'}`,
+      borderRadius: 'var(--radius-md)',
+      cursor: 'pointer',
+      transition: 'all 0.2s ease'
     };
   };
 
   const getSmallPrimaryButtonStyle = () => {
     return {
       padding: '0.5rem 1rem',
-      background: '#2196f3',
+      background: 'var(--info)',
       color: 'white',
       border: 'none',
-      borderRadius: '6px',
-      cursor: 'pointer'
+      borderRadius: 'var(--radius-md)',
+      cursor: 'pointer',
+      transition: 'all 0.2s ease'
     };
   };
 
   const getSmallDangerButtonStyle = () => {
     return {
       padding: '0.5rem 1rem',
-      background: '#f44336',
+      background: 'var(--error)',
       color: 'white',
       border: 'none',
-      borderRadius: '6px',
-      cursor: 'pointer'
+      borderRadius: 'var(--radius-md)',
+      cursor: 'pointer',
+      transition: 'all 0.2s ease'
     };
   };
 
   const getStatusStyle = (status) => {
     return {
       padding: '0.3rem 0.8rem',
-      borderRadius: '6px',
+      borderRadius: 'var(--radius-md)',
       fontSize: '0.9rem',
       fontWeight: '600',
       background: status === 'confirmed' ? 'rgba(76, 175, 80, 0.2)' : 'rgba(244, 67, 54, 0.2)',
-      color: status === 'confirmed' ? '#4caf50' : '#f44336'
+      color: status === 'confirmed' ? 'var(--success)' : 'var(--error)'
     };
   };
 
   return (
     <div className="container" style={{ padding: '3rem 0' }}>
-      <h1 style={{ color: theme === 'dark' ? '#f0f0f0' : '#333', marginBottom: '2rem' }}>
+      <h1 style={{ color: 'inherit', marginBottom: '2rem' }}>
         🎛️ Admin Dashboard
       </h1>
 
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-          <button style={getTabStyle(activeTab === 'dashboard')} onClick={() => setActiveTab('dashboard')}>
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }} role="tablist">
+          <button style={getTabStyle(activeTab === 'dashboard')} onClick={() => setActiveTab('dashboard')} role="tab" aria-selected={activeTab === 'dashboard'}>
             Dashboard
           </button>
-          <button style={getTabStyle(activeTab === 'movies')} onClick={() => { setActiveTab('movies'); resetForm(); }}>
+          <button style={getTabStyle(activeTab === 'movies')} onClick={() => { setActiveTab('movies'); resetForm(); }} role="tab" aria-selected={activeTab === 'movies'}>
             Movies
           </button>
-          <button style={getTabStyle(activeTab === 'theaters')} onClick={() => { setActiveTab('theaters'); resetTheaterForm(); }}>
+          <button style={getTabStyle(activeTab === 'theaters')} onClick={() => { setActiveTab('theaters'); resetTheaterForm(); }} role="tab" aria-selected={activeTab === 'theaters'}>
             Theaters
           </button>
-          <button style={getTabStyle(activeTab === 'shows')} onClick={() => { setActiveTab('shows'); resetShowForm(); }}>
+          <button style={getTabStyle(activeTab === 'shows')} onClick={() => { setActiveTab('shows'); resetShowForm(); }} role="tab" aria-selected={activeTab === 'shows'}>
             Shows
           </button>
-          <button style={getTabStyle(activeTab === 'bookings')} onClick={() => setActiveTab('bookings')}>
+          <button style={getTabStyle(activeTab === 'bookings')} onClick={() => setActiveTab('bookings')} role="tab" aria-selected={activeTab === 'bookings'}>
             Bookings
           </button>
         </div>
@@ -433,23 +443,23 @@ const AdminDashboard = () => {
         loading.dashboard ? (
           <div style={{ textAlign: 'center', padding: '3rem' }}>Loading dashboard...</div>
         ) : analytics ? (
-          <div>
+          <div className="fade-in">
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
               <div style={getCardStyle()}>
-                <p style={{ color: theme === 'dark' ? '#aaa' : '#666', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Users</p>
-                <p style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#e94560' }}>{analytics.totalUsers}</p>
+                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Users</p>
+                <p style={{ fontSize: '2.5rem', fontWeight: '700', color: 'var(--primary)' }}>{analytics.totalUsers}</p>
               </div>
               <div style={getCardStyle()}>
-                <p style={{ color: theme === 'dark' ? '#aaa' : '#666', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Movies</p>
-                <p style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#e94560' }}>{analytics.totalMovies}</p>
+                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Movies</p>
+                <p style={{ fontSize: '2.5rem', fontWeight: '700', color: 'var(--primary)' }}>{analytics.totalMovies}</p>
               </div>
               <div style={getCardStyle()}>
-                <p style={{ color: theme === 'dark' ? '#aaa' : '#666', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Bookings</p>
-                <p style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#e94560' }}>{analytics.totalBookings}</p>
+                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Bookings</p>
+                <p style={{ fontSize: '2.5rem', fontWeight: '700', color: 'var(--primary)' }}>{analytics.totalBookings}</p>
               </div>
               <div style={getCardStyle()}>
-                <p style={{ color: theme === 'dark' ? '#aaa' : '#666', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Revenue</p>
-                <p style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#e94560' }}>${analytics.totalRevenue?.toFixed(2) || 0}</p>
+                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Revenue</p>
+                <p style={{ fontSize: '2.5rem', fontWeight: '700', color: 'var(--primary)' }}>${analytics.totalRevenue?.toFixed(2) || 0}</p>
               </div>
             </div>
           </div>
@@ -457,73 +467,73 @@ const AdminDashboard = () => {
       )}
 
       {activeTab === 'movies' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }} className="fade-in">
           <div style={getCardStyle()}>
-            <h2 style={{ color: theme === 'dark' ? '#f0f0f0' : '#333', marginBottom: '1.5rem' }}>
+            <h2 style={{ color: 'inherit', marginBottom: '1.5rem' }}>
               {editingMovie ? 'Edit Movie' : 'Add New Movie'}
             </h2>
             <form onSubmit={handleSubmit}>
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Title</label>
-                <input type="text" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required style={getInputStyle()} />
+                <label htmlFor="movie-title" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Title</label>
+                <input id="movie-title" type="text" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required style={getInputStyle()} />
               </div>
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Description</label>
-                <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} required style={{ ...getInputStyle(), minHeight: '100px' }} />
+                <label htmlFor="movie-description" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Description</label>
+                <textarea id="movie-description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} required style={{ ...getInputStyle(), minHeight: '100px' }} />
               </div>
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Genre (comma-separated)</label>
-                <input type="text" value={formData.genre} onChange={(e) => setFormData({ ...formData, genre: e.target.value })} required style={getInputStyle()} />
+                <label htmlFor="movie-genre" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Genre (comma-separated)</label>
+                <input id="movie-genre" type="text" value={formData.genre} onChange={(e) => setFormData({ ...formData, genre: e.target.value })} required style={getInputStyle()} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Language</label>
-                  <input type="text" value={formData.language} onChange={(e) => setFormData({ ...formData, language: e.target.value })} required style={getInputStyle()} />
+                  <label htmlFor="movie-language" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Language</label>
+                  <input id="movie-language" type="text" value={formData.language} onChange={(e) => setFormData({ ...formData, language: e.target.value })} required style={getInputStyle()} />
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Duration (min)</label>
-                  <input type="number" value={formData.duration} onChange={(e) => setFormData({ ...formData, duration: e.target.value })} required style={getInputStyle()} />
+                  <label htmlFor="movie-duration" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Duration (min)</label>
+                  <input id="movie-duration" type="number" value={formData.duration} onChange={(e) => setFormData({ ...formData, duration: e.target.value })} required style={getInputStyle()} />
                 </div>
               </div>
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Release Date</label>
-                <input type="date" value={formData.releaseDate} onChange={(e) => setFormData({ ...formData, releaseDate: e.target.value })} required style={getInputStyle()} />
+                <label htmlFor="movie-release-date" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Release Date</label>
+                <input id="movie-release-date" type="date" value={formData.releaseDate} onChange={(e) => setFormData({ ...formData, releaseDate: e.target.value })} required style={getInputStyle()} />
               </div>
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Cast (comma-separated)</label>
-                <input type="text" value={formData.cast} onChange={(e) => setFormData({ ...formData, cast: e.target.value })} style={getInputStyle()} />
+                <label htmlFor="movie-cast" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Cast (comma-separated)</label>
+                <input id="movie-cast" type="text" value={formData.cast} onChange={(e) => setFormData({ ...formData, cast: e.target.value })} style={getInputStyle()} />
               </div>
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Poster URL</label>
-                <input type="text" value={formData.posterUrl} onChange={(e) => setFormData({ ...formData, posterUrl: e.target.value })} style={getInputStyle()} />
+                <label htmlFor="movie-poster" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Poster URL</label>
+                <input id="movie-poster" type="text" value={formData.posterUrl} onChange={(e) => setFormData({ ...formData, posterUrl: e.target.value })} style={getInputStyle()} />
                 {formData.posterUrl && (
                   <div style={{ marginTop: '1rem' }}>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Poster Preview</label>
                     <img 
                       src={formData.posterUrl} 
                       alt="Poster Preview"
-                      style={{ width: '200px', height: '300px', objectFit: 'cover', borderRadius: '8px', border: '1px solid ' + (theme === 'dark' ? '#3a3a5a' : '#e0e0e0') }}
+                      style={{ width: '200px', height: '300px', objectFit: 'cover', borderRadius: 'var(--radius-md)', border: `1px solid ${theme === 'dark' ? 'var(--border-dark)' : 'var(--border)'}` }}
                       onError={(e) => { e.target.src = 'https://picsum.photos/200/300?random=preview'; }}
                     />
                   </div>
                 )}
               </div>
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Trailer URL</label>
-                <input type="text" value={formData.trailerUrl} onChange={(e) => setFormData({ ...formData, trailerUrl: e.target.value })} style={getInputStyle()} />
+                <label htmlFor="movie-trailer" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Trailer URL</label>
+                <input id="movie-trailer" type="text" value={formData.trailerUrl} onChange={(e) => setFormData({ ...formData, trailerUrl: e.target.value })} style={getInputStyle()} />
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem', gap: '1rem' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600' }}>
-                  <input type="checkbox" checked={formData.isTrending} onChange={(e) => setFormData({ ...formData, isTrending: e.target.checked })} /> 🔥 Trending
+                <label htmlFor="movie-trending" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600' }}>
+                  <input id="movie-trending" type="checkbox" checked={formData.isTrending} onChange={(e) => setFormData({ ...formData, isTrending: e.target.checked })} /> 🔥 Trending
                 </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600' }}>
-                  <input type="checkbox" checked={formData.isUpcoming} onChange={(e) => setFormData({ ...formData, isUpcoming: e.target.checked })} /> 📅 Upcoming
+                <label htmlFor="movie-upcoming" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600' }}>
+                  <input id="movie-upcoming" type="checkbox" checked={formData.isUpcoming} onChange={(e) => setFormData({ ...formData, isUpcoming: e.target.checked })} /> 📅 Upcoming
                 </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600' }}>
-                  <input type="checkbox" checked={formData.isComingSoon} onChange={(e) => setFormData({ ...formData, isComingSoon: e.target.checked })} /> 🎉 Coming Soon
+                <label htmlFor="movie-coming-soon" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600' }}>
+                  <input id="movie-coming-soon" type="checkbox" checked={formData.isComingSoon} onChange={(e) => setFormData({ ...formData, isComingSoon: e.target.checked })} /> 🎉 Coming Soon
                 </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600' }}>
-                  <input type="checkbox" checked={formData.isRecommended} onChange={(e) => setFormData({ ...formData, isRecommended: e.target.checked })} /> ⭐ Recommended
+                <label htmlFor="movie-recommended" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600' }}>
+                  <input id="movie-recommended" type="checkbox" checked={formData.isRecommended} onChange={(e) => setFormData({ ...formData, isRecommended: e.target.checked })} /> ⭐ Recommended
                 </label>
               </div>
               <div style={{ display: 'flex', gap: '1rem' }}>
@@ -536,7 +546,7 @@ const AdminDashboard = () => {
           </div>
 
           <div>
-            <h2 style={{ color: theme === 'dark' ? '#f0f0f0' : '#333', marginBottom: '1.5rem' }}>Manage Movies</h2>
+            <h2 style={{ color: 'inherit', marginBottom: '1.5rem' }}>Manage Movies</h2>
             {loading.movies ? (
               <div style={{ textAlign: 'center', padding: '2rem' }}>Loading movies...</div>
             ) : (
@@ -546,12 +556,13 @@ const AdminDashboard = () => {
                     <div style={{ display: 'flex', gap: '1rem', padding: '1.2rem' }}>
                       <img 
                         src={movie.poster || 'https://picsum.photos/400/600?random=0'} 
-                        alt={movie.title}
-                        style={{ width: '100px', height: '150px', objectFit: 'cover', borderRadius: '8px' }}
+                        alt={`Poster for ${movie.title}`}
+                        style={{ width: '100px', height: '150px', objectFit: 'cover', borderRadius: 'var(--radius-md)' }}
+                        loading="lazy"
                       />
                       <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
-                          <h3 style={{ margin: 0, fontSize: '1.1rem', color: theme === 'dark' ? '#f0f0f0' : '#333' }}>{movie.title}</h3>
+                          <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'inherit' }}>{movie.title}</h3>
                           <div style={{ display: 'flex', gap: '0.3rem' }}>
                             {movie.isTrending && <span title="Trending">🔥</span>}
                             {movie.isUpcoming && <span title="Upcoming">📅</span>}
@@ -559,10 +570,10 @@ const AdminDashboard = () => {
                             {movie.isRecommended && <span title="Recommended">⭐</span>}
                           </div>
                         </div>
-                        <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.3rem', fontSize: '0.9rem' }}>
+                        <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.9rem' }}>
                           {Array.isArray(movie.genre) ? movie.genre.join(', ') : movie.genre} • {movie.language}
                         </p>
-                        <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.8rem', fontSize: '0.9rem' }}>
+                        <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.8rem', fontSize: '0.9rem' }}>
                           ⭐ {movie.rating?.toFixed(1) || 'N/A'} • {movie.duration} min
                         </p>
                         <div style={{ display: 'flex', gap: '0.6rem' }}>
@@ -580,23 +591,24 @@ const AdminDashboard = () => {
       )}
 
       {activeTab === 'theaters' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }} className="fade-in">
           <div style={getCardStyle()}>
-            <h2 style={{ color: theme === 'dark' ? '#f0f0f0' : '#333', marginBottom: '1.5rem' }}>
+            <h2 style={{ color: 'inherit', marginBottom: '1.5rem' }}>
               {editingTheater ? 'Edit Theater' : 'Add New Theater'}
             </h2>
             <form onSubmit={handleTheaterSubmit}>
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Theater Name</label>
-                <input type="text" value={theaterFormData.name} onChange={(e) => setTheaterFormData({ ...theaterFormData, name: e.target.value })} required style={getInputStyle()} />
+                <label htmlFor="theater-name" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Theater Name</label>
+                <input id="theater-name" type="text" value={theaterFormData.name} onChange={(e) => setTheaterFormData({ ...theaterFormData, name: e.target.value })} required style={getInputStyle()} />
               </div>
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Location</label>
-                <input type="text" value={theaterFormData.location} onChange={(e) => setTheaterFormData({ ...theaterFormData, location: e.target.value })} required style={getInputStyle()} />
+                <label htmlFor="theater-location" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Location</label>
+                <input id="theater-location" type="text" value={theaterFormData.location} onChange={(e) => setTheaterFormData({ ...theaterFormData, location: e.target.value })} required style={getInputStyle()} />
               </div>
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Screens (JSON)</label>
+                <label htmlFor="theater-screens" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Screens (JSON)</label>
                 <textarea 
+                  id="theater-screens"
                   value={JSON.stringify(theaterFormData.screens, null, 2)} 
                   onChange={(e) => {
                     try {
@@ -618,16 +630,16 @@ const AdminDashboard = () => {
             </form>
           </div>
           <div>
-            <h2 style={{ color: theme === 'dark' ? '#f0f0f0' : '#333', marginBottom: '1.5rem' }}>Manage Theaters</h2>
+            <h2 style={{ color: 'inherit', marginBottom: '1.5rem' }}>Manage Theaters</h2>
             {loading.theaters ? (
               <div style={{ textAlign: 'center', padding: '2rem' }}>Loading theaters...</div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
                 {theaters.map(theater => (
                   <div key={theater._id} style={{ ...getCardStyle(), padding: '1.2rem' }}>
-                    <h3 style={{ margin: '0 0 0.5rem', color: theme === 'dark' ? '#f0f0f0' : '#333' }}>{theater.name}</h3>
-                    <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.5rem' }}>{theater.location}</p>
-                    <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.8rem' }}>
+                    <h3 style={{ margin: '0 0 0.5rem', color: 'inherit' }}>{theater.name}</h3>
+                    <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.5rem' }}>{theater.location}</p>
+                    <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.8rem' }}>
                       Screens: {theater.screens?.length || 0}
                     </p>
                     <div style={{ display: 'flex', gap: '0.6rem' }}>
@@ -643,15 +655,16 @@ const AdminDashboard = () => {
       )}
 
       {activeTab === 'shows' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }} className="fade-in">
           <div style={getCardStyle()}>
-            <h2 style={{ color: theme === 'dark' ? '#f0f0f0' : '#333', marginBottom: '1.5rem' }}>
+            <h2 style={{ color: 'inherit', marginBottom: '1.5rem' }}>
               {editingShow ? 'Edit Show' : 'Add New Show'}
             </h2>
             <form onSubmit={handleShowSubmit}>
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Movie</label>
+                <label htmlFor="show-movie" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Movie</label>
                 <select 
+                  id="show-movie"
                   value={showFormData.movie} 
                   onChange={(e) => setShowFormData({ ...showFormData, movie: e.target.value })} 
                   required 
@@ -664,8 +677,9 @@ const AdminDashboard = () => {
                 </select>
               </div>
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Theater</label>
+                <label htmlFor="show-theater" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Theater</label>
                 <select 
+                  id="show-theater"
                   value={showFormData.theater} 
                   onChange={(e) => {
                     const theater = theaters.find(t => t._id === e.target.value);
@@ -686,8 +700,9 @@ const AdminDashboard = () => {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Screen Number</label>
+                  <label htmlFor="show-screen" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Screen Number</label>
                   <input 
+                    id="show-screen"
                     type="number" 
                     value={showFormData.screenNumber} 
                     onChange={(e) => setShowFormData({ ...showFormData, screenNumber: Number(e.target.value) })} 
@@ -696,8 +711,9 @@ const AdminDashboard = () => {
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Price</label>
+                  <label htmlFor="show-price" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Price</label>
                   <input 
+                    id="show-price"
                     type="number" 
                     value={showFormData.price} 
                     onChange={(e) => setShowFormData({ ...showFormData, price: e.target.value })} 
@@ -708,12 +724,12 @@ const AdminDashboard = () => {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Date</label>
-                  <input type="date" value={showFormData.date} onChange={(e) => setShowFormData({ ...showFormData, date: e.target.value })} required style={getInputStyle()} />
+                  <label htmlFor="show-date" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Date</label>
+                  <input id="show-date" type="date" value={showFormData.date} onChange={(e) => setShowFormData({ ...showFormData, date: e.target.value })} required style={getInputStyle()} />
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Time</label>
-                  <input type="text" value={showFormData.time} onChange={(e) => setShowFormData({ ...showFormData, time: e.target.value })} required style={getInputStyle()} placeholder="e.g. 7:00 PM" />
+                  <label htmlFor="show-time" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Time</label>
+                  <input id="show-time" type="text" value={showFormData.time} onChange={(e) => setShowFormData({ ...showFormData, time: e.target.value })} required style={getInputStyle()} placeholder="e.g. 7:00 PM" />
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '1rem' }}>
@@ -725,17 +741,17 @@ const AdminDashboard = () => {
             </form>
           </div>
           <div>
-            <h2 style={{ color: theme === 'dark' ? '#f0f0f0' : '#333', marginBottom: '1.5rem' }}>Manage Shows</h2>
+            <h2 style={{ color: 'inherit', marginBottom: '1.5rem' }}>Manage Shows</h2>
             {loading.shows ? (
               <div style={{ textAlign: 'center', padding: '2rem' }}>Loading shows...</div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
                 {shows.map(show => (
                   <div key={show._id} style={{ ...getCardStyle(), padding: '1.2rem' }}>
-                    <h3 style={{ margin: '0 0 0.5rem', color: theme === 'dark' ? '#f0f0f0' : '#333' }}>{show.movie?.title}</h3>
-                    <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.3rem' }}>{show.theater?.name} • Screen {show.screenNumber}</p>
-                    <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.3rem' }}>{new Date(show.date).toLocaleDateString()} • {show.time}</p>
-                    <p style={{ color: '#e94560', fontWeight: 'bold', marginBottom: '0.8rem' }}>Price: ${show.price}</p>
+                    <h3 style={{ margin: '0 0 0.5rem', color: 'inherit' }}>{show.movie?.title}</h3>
+                    <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem' }}>{show.theater?.name} • Screen {show.screenNumber}</p>
+                    <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem' }}>{new Date(show.date).toLocaleDateString()} • {show.time}</p>
+                    <p style={{ color: 'var(--primary)', fontWeight: '700', marginBottom: '0.8rem' }}>Price: ${show.price}</p>
                     <div style={{ display: 'flex', gap: '0.6rem' }}>
                       <button onClick={() => handleEditShow(show)} style={getSmallPrimaryButtonStyle()}>Edit</button>
                       <button onClick={() => handleDeleteShow(show._id)} style={getSmallDangerButtonStyle()}>Delete</button>
@@ -749,19 +765,19 @@ const AdminDashboard = () => {
       )}
 
       {activeTab === 'bookings' && (
-        <div>
-          <h2 style={{ color: theme === 'dark' ? '#f0f0f0' : '#333', marginBottom: '1.5rem' }}>All Bookings</h2>
+        <div className="fade-in">
+          <h2 style={{ color: 'inherit', marginBottom: '1.5rem' }}>All Bookings</h2>
           {loading.bookings ? (
             <div style={{ textAlign: 'center', padding: '2rem' }}>Loading bookings...</div>
           ) : (
             bookings.map(booking => (
               <div key={booking._id} style={{ ...getCardStyle(), padding: '1.5rem', marginBottom: '1rem' }}>
                 <p style={{ fontWeight: '600', marginBottom: '0.5rem' }}>{booking.movie?.title}</p>
-                <p style={{ color: theme === 'dark' ? '#aaa' : '#666' }}>By: {booking.user?.name} ({booking.user?.email})</p>
-                <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.5rem' }}>
+                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)' }}>By: {booking.user?.name} ({booking.user?.email})</p>
+                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                   📍 {booking.theater?.name} • {new Date(booking.show?.date).toLocaleDateString()} • {booking.show?.time}
                 </p>
-                <p style={{ color: '#e94560', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                <p style={{ color: 'var(--primary)', fontWeight: '700', marginBottom: '0.5rem' }}>
                   ${booking.totalAmount?.toFixed(2) || 0} • {booking.selectedSeats?.length} seats
                 </p>
                 <span style={getStatusStyle(booking.status)}>

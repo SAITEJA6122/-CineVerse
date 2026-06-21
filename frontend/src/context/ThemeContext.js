@@ -11,11 +11,9 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('theme', theme);
     if (theme === 'dark') {
-      document.body.style.backgroundColor = '#0f0f23';
-      document.body.style.color = '#f0f0f0';
+      document.body.classList.add('dark-mode');
     } else {
-      document.body.style.backgroundColor = '#f8f9fa';
-      document.body.style.color = '#333';
+      document.body.classList.remove('dark-mode');
     }
   }, [theme]);
 

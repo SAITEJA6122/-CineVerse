@@ -127,12 +127,12 @@ const MovieDetails = () => {
   if (loading) {
     return (
       <div className="container" style={{ padding: '3rem' }}>
-        <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap' }}>
-          <div style={{ width: '400px', height: '500px', borderRadius: '12px' }} className="skeleton" />
+        <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap' }} className="fade-in">
+          <div style={{ width: '400px', height: '500px', borderRadius: 'var(--radius-lg)' }} className="skeleton" />
           <div style={{ flex: 1, minWidth: '300px' }}>
-            <div style={{ height: '40px', width: '300px', marginBottom: '1rem', borderRadius: '8px' }} className="skeleton" />
-            <div style={{ height: '20px', width: '200px', marginBottom: '1rem', borderRadius: '8px' }} className="skeleton" />
-            <div style={{ height: '100px', marginBottom: '1rem', borderRadius: '8px' }} className="skeleton" />
+            <div style={{ height: '40px', width: '300px', marginBottom: '1rem', borderRadius: 'var(--radius-md)' }} className="skeleton" />
+            <div style={{ height: '20px', width: '200px', marginBottom: '1rem', borderRadius: 'var(--radius-md)' }} className="skeleton" />
+            <div style={{ height: '100px', marginBottom: '1rem', borderRadius: 'var(--radius-md)' }} className="skeleton" />
           </div>
         </div>
       </div>
@@ -144,44 +144,46 @@ const MovieDetails = () => {
   }
 
   const buttonStyle = {
-    background: 'linear-gradient(135deg, #e94560, #ff6b6b)',
+    background: 'linear-gradient(135deg, var(--primary), var(--primary-hover))',
     color: 'white',
     padding: '1rem 2.5rem',
     border: 'none',
-    borderRadius: '10px',
+    borderRadius: 'var(--radius-md)',
     fontSize: '1.1rem',
-    fontWeight: 'bold',
+    fontWeight: '700',
     cursor: 'pointer',
     marginTop: '1.5rem',
-    transition: 'opacity 0.3s ease'
+    transition: 'all 0.2s ease',
+    boxShadow: '0 4px 12px rgba(233, 69, 96, 0.3)'
   };
 
   const secondaryButtonStyle = {
     background: 'transparent',
-    color: '#e94560',
+    color: 'var(--primary)',
     padding: '1rem 2rem',
-    border: '2px solid #e94560',
-    borderRadius: '10px',
+    border: '2px solid var(--primary)',
+    borderRadius: 'var(--radius-md)',
     fontSize: '1rem',
     fontWeight: '600',
     cursor: 'pointer',
     marginTop: '1.5rem',
-    marginLeft: '1rem'
+    marginLeft: '1rem',
+    transition: 'all 0.2s ease'
   };
 
   const showCardStyle = {
-    background: theme === 'dark' ? '#1e1e3a' : '#ffffff',
-    border: '1px solid ' + (theme === 'dark' ? '#3a3a5a' : '#e0e0e0'),
-    borderRadius: '12px',
+    background: theme === 'dark' ? 'var(--surface-dark)' : 'var(--surface)',
+    border: `1px solid ${theme === 'dark' ? 'var(--border-dark)' : 'var(--border)'}`,
+    borderRadius: 'var(--radius-md)',
     padding: '1.2rem',
     cursor: 'pointer',
-    transition: 'all 0.3s ease'
+    transition: 'all 0.2s ease'
   };
 
   const reviewCardStyle = {
-    background: theme === 'dark' ? '#1e1e3a' : '#ffffff',
-    border: '1px solid ' + (theme === 'dark' ? '#3a3a5a' : '#e0e0e0'),
-    borderRadius: '12px',
+    background: theme === 'dark' ? 'var(--surface-dark)' : 'var(--surface)',
+    border: `1px solid ${theme === 'dark' ? 'var(--border-dark)' : 'var(--border)'}`,
+    borderRadius: 'var(--radius-md)',
     padding: '1.5rem',
     marginBottom: '1rem'
   };
@@ -189,28 +191,30 @@ const MovieDetails = () => {
   const getSelectedShowCardStyle = () => {
     return {
       ...showCardStyle,
-      border: '1px solid #e94560',
-      background: 'rgba(233, 69, 96, 0.1)'
+      border: '2px solid var(--primary)',
+      background: 'var(--primary-light)'
     };
   };
 
   const getFormContainerStyle = () => {
     return {
       marginBottom: '2rem',
-      background: theme === 'dark' ? '#1e1e3a' : '#ffffff',
+      background: theme === 'dark' ? 'var(--surface-dark)' : 'var(--surface)',
       padding: '2rem',
-      borderRadius: '12px',
-      border: '1px solid ' + (theme === 'dark' ? '#3a3a5a' : '#e0e0e0')
+      borderRadius: 'var(--radius-lg)',
+      border: `1px solid ${theme === 'dark' ? 'var(--border-dark)' : 'var(--border)'}`
     };
   };
 
   const getInputStyle = () => {
     return {
       padding: '0.7rem',
-      borderRadius: '8px',
-      border: '1px solid ' + (theme === 'dark' ? '#3a3a5a' : '#e0e0e0'),
-      background: theme === 'dark' ? '#1a1a2e' : '#ffffff',
-      color: theme === 'dark' ? '#f0f0f0' : '#333'
+      borderRadius: 'var(--radius-md)',
+      border: `1px solid ${theme === 'dark' ? 'var(--border-dark)' : 'var(--border)'}`,
+      background: theme === 'dark' ? 'var(--bg-dark)' : 'var(--bg)',
+      color: 'inherit',
+      outline: 'none',
+      transition: 'border-color 0.2s ease'
     };
   };
 
@@ -218,12 +222,15 @@ const MovieDetails = () => {
     return {
       width: '100%',
       padding: '1rem',
-      borderRadius: '8px',
-      border: '1px solid ' + (theme === 'dark' ? '#3a3a5a' : '#e0e0e0'),
-      background: theme === 'dark' ? '#1a1a2e' : '#ffffff',
-      color: theme === 'dark' ? '#f0f0f0' : '#333',
+      borderRadius: 'var(--radius-md)',
+      border: `1px solid ${theme === 'dark' ? 'var(--border-dark)' : 'var(--border)'}`,
+      background: theme === 'dark' ? 'var(--bg-dark)' : 'var(--bg)',
+      color: 'inherit',
       minHeight: '100px',
-      fontSize: '1rem'
+      fontSize: '1rem',
+      outline: 'none',
+      resize: 'vertical',
+      transition: 'border-color 0.2s ease'
     };
   };
 
@@ -237,44 +244,44 @@ const MovieDetails = () => {
   return (
     <div style={{ padding: '4rem 0' }}>
       <div className="container">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '3rem', marginBottom: '4rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '3rem', marginBottom: '4rem', flexWrap: 'wrap' }} className="fade-in">
           <div>
             <img 
               src={movie.poster || 'https://picsum.photos/400/600?random=0'} 
-              alt={movie.title}
+              alt={`Poster for ${movie.title}`}
               style={{
                 width: '100%',
                 maxWidth: '450px',
-                borderRadius: '16px',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.2)'
+                borderRadius: 'var(--radius-lg)',
+                boxShadow: 'var(--shadow-lg)'
               }}
               loading="lazy"
             />
           </div>
           
           <div>
-            <h1 style={{ fontSize: '2.8rem', marginBottom: '1rem', color: theme === 'dark' ? '#f0f0f0' : '#333' }}>
+            <h1 style={{ fontSize: '2.8rem', marginBottom: '1rem', color: 'inherit' }}>
               {movie.title}
             </h1>
             
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', alignItems: 'center' }}>
-              <span style={{ background: 'linear-gradient(135deg, #e94560, #ff6b6b)', color: 'white', padding: '0.5rem 1rem', borderRadius: '8px', fontWeight: 'bold', fontSize: '1.1rem' }}>
+              <span style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-hover))', color: 'white', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', fontWeight: '700', fontSize: '1.1rem' }}>
                 ⭐ {movie.rating ? movie.rating.toFixed(1) : 'N/A'}
               </span>
-              <span style={{ color: '#000000', fontSize: '1.1rem' }}>
+              <span style={{ color: 'inherit', fontSize: '1.1rem' }}>
                 {Array.isArray(movie.genre) ? movie.genre.join(', ') : movie.genre} • {movie.language} • {movie.duration} min
               </span>
             </div>
             
-            <p style={{ fontSize: '1.15rem', lineHeight: '1.8', marginBottom: '2rem', color: theme === 'dark' ? '#ddd' : '#444' }}>
+            <p style={{ fontSize: '1.15rem', lineHeight: '1.8', marginBottom: '2rem', color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)' }}>
               {movie.description}
             </p>
             
-            <p style={{ marginBottom: '1rem', color: theme === 'dark' ? '#ccc' : '#555' }}>
+            <p style={{ marginBottom: '1rem', color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)' }}>
               <strong>🎭 Cast:</strong> {Array.isArray(movie.cast) ? movie.cast.join(', ') : movie.cast}
             </p>
             
-            <p style={{ marginBottom: '1.5rem', color: theme === 'dark' ? '#ccc' : '#555' }}>
+            <p style={{ marginBottom: '1.5rem', color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)' }}>
               <strong>📅 Release Date:</strong> {new Date(movie.releaseDate).toLocaleDateString()}
             </p>
             
@@ -282,8 +289,9 @@ const MovieDetails = () => {
               <button 
                 style={buttonStyle}
                 onClick={toggleFavorite}
-                onMouseEnter={(e) => e.target.style.opacity = 0.9}
-                onMouseLeave={(e) => e.target.style.opacity = 1}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+                aria-label={favorites.includes(id) ? 'Remove from favorites' : 'Add to favorites'}
               >
                 {favorites.includes(id) ? '❤️ In Favorites' : '♡ Add to Favorites'}
               </button>
@@ -294,6 +302,9 @@ const MovieDetails = () => {
                   target="_blank" 
                   rel="noopener noreferrer"
                   style={secondaryButtonStyle}
+                  onMouseEnter={(e) => e.target.style.background = 'var(--primary-light)'}
+                  onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                  aria-label={`Watch trailer for ${movie.title}`}
                 >
                   ▶ Watch Trailer
                 </a>
@@ -303,11 +314,11 @@ const MovieDetails = () => {
         </div>
 
         {movie.trailer && (
-          <div style={{ marginBottom: '4rem' }}>
-            <h2 style={{ fontSize: '2rem', marginBottom: '1.5rem', color: theme === 'dark' ? '#f0f0f0' : '#333' }}>
+          <div style={{ marginBottom: '4rem' }} className="fade-in">
+            <h2 style={{ fontSize: '2rem', marginBottom: '1.5rem', color: 'inherit' }}>
               🎬 Trailer
             </h2>
-            <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '16px' }}>
+            <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
               <iframe
                 src={movie.trailer}
                 title={`${movie.title} Trailer`}
@@ -321,28 +332,37 @@ const MovieDetails = () => {
         )}
 
         {shows.length > 0 && (
-          <div style={{ marginBottom: '4rem' }}>
-            <h2 style={{ fontSize: '2rem', marginBottom: '1.5rem', color: theme === 'dark' ? '#f0f0f0' : '#333' }}>
+          <div style={{ marginBottom: '4rem' }} className="fade-in">
+            <h2 style={{ fontSize: '2rem', marginBottom: '1.5rem', color: 'inherit' }}>
               🎟 Available Shows
             </h2>
             
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }} role="radiogroup" aria-label="Available shows">
               {shows.map(show => (
                 <div
                   key={show._id}
                   style={selectedShow?._id === show._id ? getSelectedShowCardStyle() : showCardStyle}
                   onClick={() => setSelectedShow(show)}
+                  role="radio"
+                  aria-checked={selectedShow?._id === show._id}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedShow(show);
+                    }
+                  }}
                 >
                   <p style={{ fontWeight: '600', fontSize: '1.1rem', marginBottom: '0.5rem' }}>
                     📍 {show.theater?.name || 'Cinema'}
                   </p>
-                  <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.3rem' }}>
+                  <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem' }}>
                     📅 {new Date(show.date).toLocaleDateString()}
                   </p>
-                  <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.5rem' }}>
+                  <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                     ⏰ {show.time}
                   </p>
-                  <p style={{ fontWeight: 'bold', color: '#e94560', fontSize: '1.1rem' }}>
+                  <p style={{ fontWeight: '700', color: 'var(--primary)', fontSize: '1.1rem' }}>
                     💰 ${show.price}
                   </p>
                 </div>
@@ -358,6 +378,8 @@ const MovieDetails = () => {
                   display: 'inline-block',
                   padding: '1rem 2.5rem'
                 }}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
               >
                 🎫 Book Tickets for This Show
               </Link>
@@ -379,18 +401,19 @@ const MovieDetails = () => {
           </div>
         )}
 
-        <div style={{ marginBottom: '4rem' }}>
-          <h2 style={{ fontSize: '2rem', marginBottom: '1.5rem', color: theme === 'dark' ? '#f0f0f0' : '#333' }}>
+        <div style={{ marginBottom: '4rem' }} className="fade-in">
+          <h2 style={{ fontSize: '2rem', marginBottom: '1.5rem', color: 'inherit' }}>
             💬 Reviews & Ratings
           </h2>
           
           {user && (
-            <form onSubmit={submitReview} style={getFormContainerStyle()}>
+            <form onSubmit={submitReview} style={getFormContainerStyle()} aria-label="Add your review">
               <h3 style={{ marginBottom: '1rem' }}>Add Your Review</h3>
               
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Rating</label>
+                <label htmlFor="review-rating" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Rating</label>
                 <select
+                  id="review-rating"
                   value={reviewRating}
                   onChange={(e) => setReviewRating(Number(e.target.value))}
                   style={getInputStyle()}
@@ -402,8 +425,9 @@ const MovieDetails = () => {
               </div>
               
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Comment</label>
+                <label htmlFor="review-comment" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Comment</label>
                 <textarea
+                  id="review-comment"
                   value={reviewComment}
                   onChange={(e) => setReviewComment(e.target.value)}
                   placeholder="Write your review..."
@@ -421,26 +445,26 @@ const MovieDetails = () => {
               <div key={index} style={reviewCardStyle}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
                   <strong style={{ fontSize: '1.1rem' }}>{review.user || 'Anonymous'}</strong>
-                  <span style={{ background: 'linear-gradient(135deg, #e94560, #ff6b6b)', color: 'white', padding: '0.3rem 0.8rem', borderRadius: '6px', fontWeight: 'bold' }}>
+                  <span style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-hover))', color: 'white', padding: '0.3rem 0.8rem', borderRadius: 'var(--radius-md)', fontWeight: '700' }}>
                     ⭐ {review.rating}
                   </span>
                 </div>
-                <p style={{ color: theme === 'dark' ? '#ccc' : '#555', lineHeight: '1.6' }}>{review.comment}</p>
-                <p style={{ fontSize: '0.9rem', color: theme === 'dark' ? '#888' : '#888', marginTop: '0.5rem' }}>
+                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', lineHeight: '1.6' }}>{review.comment}</p>
+                <p style={{ fontSize: '0.9rem', color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginTop: '0.5rem' }}>
                   {review.date ? new Date(review.date).toLocaleDateString() : ''}
                 </p>
               </div>
             ))
           ) : (
-            <p style={{ color: theme === 'dark' ? '#aaa' : '#666', textAlign: 'center', padding: '2rem' }}>
+            <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', textAlign: 'center', padding: '2rem' }}>
               No reviews yet. Be the first to review!
             </p>
           )}
         </div>
 
         {similarMovies.length > 0 && (
-          <div>
-            <h2 style={{ fontSize: '2rem', marginBottom: '1.5rem', color: theme === 'dark' ? '#f0f0f0' : '#333' }}>
+          <div className="fade-in">
+            <h2 style={{ fontSize: '2rem', marginBottom: '1.5rem', color: 'inherit' }}>
               🎥 Similar Movies
             </h2>
             <div style={gridStyle}>

@@ -114,24 +114,27 @@ const SeatSelection = () => {
     };
 
     if (selected) {
-      style.background = '#e94560';
+      style.background = 'var(--primary)';
       style.color = 'white';
       style.transform = 'scale(1.1)';
+      style.boxShadow = 'var(--shadow-md)';
     } else if (!available) {
-      style.background = theme === 'dark' ? '#3a3a5a' : '#ddd';
+      style.background = theme === 'dark' ? 'var(--border-dark)' : '#ddd';
       style.color = theme === 'dark' ? '#666' : '#888';
       style.cursor = 'not-allowed';
     } else {
       if (tier === 'Platinum') {
         style.background = 'linear-gradient(135deg, #FFD700, #FFA500)';
         style.color = 'white';
+        style.boxShadow = '0 2px 8px rgba(255, 165, 0, 0.3)';
       } else if (tier === 'Gold') {
         style.background = 'linear-gradient(135deg, #C0C0C0, #A9A9A9)';
         style.color = 'white';
+        style.boxShadow = '0 2px 8px rgba(192, 192, 192, 0.3)';
       } else {
-        style.background = theme === 'dark' ? '#1e1e3a' : 'white';
-        style.color = theme === 'dark' ? '#f0f0f0' : '#333';
-        style.border = `2px solid ${theme === 'dark' ? '#3a3a5a' : '#e0e0e0'}`;
+        style.background = theme === 'dark' ? 'var(--surface-dark)' : 'var(--surface)';
+        style.color = 'inherit';
+        style.border = `2px solid ${theme === 'dark' ? 'var(--border-dark)' : 'var(--border)'}`;
       }
     }
 
@@ -139,40 +142,42 @@ const SeatSelection = () => {
   };
 
   const screenStyle = {
-    background: 'linear-gradient(135deg, #e94560, #ff6b6b)',
+    background: 'linear-gradient(135deg, var(--primary), var(--primary-hover))',
     color: 'white',
     padding: '1rem',
     textAlign: 'center',
     marginBottom: '3rem',
     borderRadius: '8px 8px 50px 50px',
-    boxShadow: '0 4px 20px rgba(233, 69, 96, 0.3)',
+    boxShadow: 'var(--shadow-md)',
     maxWidth: '600px',
     marginLeft: 'auto',
-    marginRight: 'auto'
+    marginRight: 'auto',
+    fontWeight: '600'
   };
 
   const buttonStyle = {
-    background: 'linear-gradient(135deg, #e94560, #ff6b6b)',
+    background: 'linear-gradient(135deg, var(--primary), var(--primary-hover))',
     color: 'white',
     padding: '1.2rem 3rem',
     border: 'none',
-    borderRadius: '12px',
+    borderRadius: 'var(--radius-lg)',
     fontSize: '1.2rem',
-    fontWeight: 'bold',
+    fontWeight: '700',
     cursor: 'pointer',
     marginTop: '2rem',
-    transition: 'opacity 0.3s ease'
+    transition: 'all 0.2s ease',
+    boxShadow: '0 4px 12px rgba(233, 69, 96, 0.3)'
   };
 
   const totalAmount = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
 
   return (
     <div className="container" style={{ padding: '3rem 0' }}>
-      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ color: theme === 'dark' ? '#f0f0f0' : '#333', marginBottom: '0.5rem' }}>
+      <div style={{ textAlign: 'center', marginBottom: '2rem' }} className="fade-in">
+        <h1 style={{ color: 'inherit', marginBottom: '0.5rem' }}>
           🎬 {show.movie?.title}
         </h1>
-        <p style={{ fontSize: '1.1rem', color: theme === 'dark' ? '#aaa' : '#666' }}>
+        <p style={{ fontSize: '1.1rem', color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)' }}>
           📍 {show.theater?.name} • 📅 {new Date(show.date).toLocaleDateString()} • ⏰ {show.time}
         </p>
       </div>
@@ -190,7 +195,7 @@ const SeatSelection = () => {
                 textAlign: 'right', 
                 fontWeight: 'bold', 
                 lineHeight: '40px',
-                color: theme === 'dark' ? '#aaa' : '#666',
+                color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)',
                 marginRight: '0.5rem'
               }}>
                 {String.fromCharCode(65 + rowIndex)}
@@ -223,7 +228,7 @@ const SeatSelection = () => {
               height: '35px',
               cursor: 'default' 
             }} />
-            <span style={{ color: theme === 'dark' ? '#ccc' : '#555' }}>Platinum</span>
+            <span style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)' }}>Platinum</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <div style={{ 
@@ -232,7 +237,7 @@ const SeatSelection = () => {
               height: '35px',
               cursor: 'default' 
             }} />
-            <span style={{ color: theme === 'dark' ? '#ccc' : '#555' }}>Gold</span>
+            <span style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)' }}>Gold</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <div style={{ 
@@ -241,7 +246,7 @@ const SeatSelection = () => {
               height: '35px',
               cursor: 'default' 
             }} />
-            <span style={{ color: theme === 'dark' ? '#ccc' : '#555' }}>Silver</span>
+            <span style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)' }}>Silver</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <div style={{ 
@@ -251,7 +256,7 @@ const SeatSelection = () => {
               cursor: 'default',
               transform: 'none'
             }} />
-            <span style={{ color: theme === 'dark' ? '#ccc' : '#555' }}>Selected</span>
+            <span style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)' }}>Selected</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <div style={{ 
@@ -260,7 +265,7 @@ const SeatSelection = () => {
               height: '35px',
               cursor: 'default'
             }} />
-            <span style={{ color: theme === 'dark' ? '#ccc' : '#555' }}>Booked</span>
+            <span style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)' }}>Booked</span>
           </div>
         </div>
 
@@ -268,17 +273,18 @@ const SeatSelection = () => {
           <div style={{ 
             textAlign: 'center', 
             padding: '2rem', 
-            background: theme === 'dark' ? '#1e1e3a' : 'white', 
-            borderRadius: '16px',
-            border: `1px solid ${theme === 'dark' ? '#3a3a5a' : '#e0e0e0'}`
-          }}>
-            <h3 style={{ marginBottom: '0.8rem', color: theme === 'dark' ? '#f0f0f0' : '#333' }}>
+            background: theme === 'dark' ? 'var(--surface-dark)' : 'var(--surface)', 
+            borderRadius: 'var(--radius-lg)',
+            border: `1px solid ${theme === 'dark' ? 'var(--border-dark)' : 'var(--border)'}`
+          }} className="fade-in">
+            <h3 style={{ marginBottom: '0.8rem', color: 'inherit' }}>
               Selected Seats: {selectedSeats.map(s => `${String.fromCharCode(65 + s.row)}${s.seat + 1} (${s.tier})`).join(', ')}
             </h3>
             <h2 style={{ 
-              color: '#e94560', 
+              color: 'var(--primary)', 
               fontSize: '2rem',
-              marginBottom: '1rem'
+              marginBottom: '1rem',
+              fontWeight: '700'
             }}>
               Total: ${totalAmount.toFixed(2)}
             </h2>
@@ -290,8 +296,8 @@ const SeatSelection = () => {
                 opacity: booking ? 0.6 : 1,
                 cursor: booking ? 'not-allowed' : 'pointer'
               }}
-              onMouseEnter={(e) => !booking && (e.target.style.opacity = 0.9)}
-              onMouseLeave={(e) => e.target.style.opacity = booking ? 0.6 : 1}
+              onMouseEnter={(e) => !booking && (e.target.style.transform = 'translateY(-2px)')}
+              onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
             >
               {booking ? 'Booking...' : 'Confirm Booking'}
             </button>

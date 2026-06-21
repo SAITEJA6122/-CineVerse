@@ -48,7 +48,7 @@ const Login = () => {
   };
 
   const containerStyle = {
-    minHeight: '70vh',
+    minHeight: '75vh',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -57,62 +57,66 @@ const Login = () => {
 
   const formContainerStyle = {
     width: '100%',
-    maxWidth: '450px',
-    background: theme === 'dark' ? '#1e1e3a' : '#ffffff',
-    borderRadius: '16px',
-    padding: '3rem',
-    boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
-    border: `1px solid ${theme === 'dark' ? '#3a3a5a' : '#e0e0e0'}`
+    maxWidth: '480px',
+    background: theme === 'dark' ? 'var(--surface-dark)' : 'var(--surface)',
+    borderRadius: 'var(--radius-lg)',
+    padding: '3.5rem',
+    boxShadow: 'var(--shadow-lg)',
+    border: `1px solid ${theme === 'dark' ? 'var(--border-dark)' : 'var(--border)'}`
   };
 
   const inputStyle = (hasError) => ({
     width: '100%',
-    padding: '1rem',
-    marginBottom: hasError ? '0.5rem' : '1.5rem',
-    borderRadius: '8px',
-    border: `2px solid ${hasError ? '#e94560' : (theme === 'dark' ? '#3a3a5a' : '#e0e0e0')}`,
+    padding: '1.1rem',
+    marginBottom: hasError ? '0.6rem' : '1.6rem',
+    borderRadius: 'var(--radius-md)',
+    border: `2px solid ${hasError ? 'var(--error)' : (theme === 'dark' ? 'var(--border-dark)' : 'var(--border)')}`,
     fontSize: '1rem',
-    background: theme === 'dark' ? '#1a1a2e' : '#ffffff',
-    color: theme === 'dark' ? '#f0f0f0' : '#333',
-    transition: 'border-color 0.3s ease'
+    background: theme === 'dark' ? 'var(--bg-dark)' : 'var(--bg)',
+    color: 'inherit',
+    transition: 'all 0.2s ease',
+    outline: 'none'
   });
 
   const buttonStyle = {
     width: '100%',
-    padding: '1rem',
-    background: 'linear-gradient(135deg, #e94560, #ff6b6b)',
+    padding: '1.1rem',
+    background: 'linear-gradient(135deg, var(--primary), var(--primary-hover))',
     color: 'white',
     border: 'none',
-    borderRadius: '8px',
+    borderRadius: 'var(--radius-md)',
     fontSize: '1.1rem',
-    fontWeight: 'bold',
+    fontWeight: '700',
     cursor: 'pointer',
-    transition: 'opacity 0.3s ease'
+    transition: 'all 0.2s ease',
+    boxShadow: '0 4px 12px rgba(233, 69, 96, 0.3)'
   };
 
   const titleStyle = {
-    fontSize: '2rem',
-    fontWeight: '700',
+    fontSize: '2.2rem',
+    fontWeight: '800',
     textAlign: 'center',
-    marginBottom: '0.5rem',
-    color: theme === 'dark' ? '#f0f0f0' : '#333'
+    marginBottom: '0.6rem',
+    color: 'inherit'
   };
 
   const subtitleStyle = {
     textAlign: 'center',
-    marginBottom: '2rem',
-    color: theme === 'dark' ? '#aaa' : '#666'
+    marginBottom: '2.2rem',
+    color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)'
   };
 
   const errorStyle = {
-    color: '#e94560',
+    color: 'var(--error)',
     fontSize: '0.9rem',
-    marginBottom: '1rem'
+    marginBottom: '1.2rem',
+    fontWeight: '500'
   };
 
   return (
     <div style={containerStyle}>
-      <div style={formContainerStyle}>
+      <div style={formContainerStyle} className="fade-in">
+        <div style={{ textAlign: 'center', marginBottom: '0.5rem', fontSize: '2.5rem' }}>🎬</div>
         <h2 style={titleStyle}>Welcome Back!</h2>
         <p style={subtitleStyle}>Sign in to continue booking movies</p>
         
@@ -124,10 +128,9 @@ const Login = () => {
             onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors({...errors, email: ''}); }}
             style={inputStyle(errors.email)}
             required
-            onFocus={(e) => e.target.style.borderColor = '#e94560'}
-            onBlur={(e) => e.target.style.borderColor = errors.email ? '#e94560' : (theme === 'dark' ? '#3a3a5a' : '#e0e0e0')}
+            aria-describedby={errors.email ? "email-error" : undefined}
           />
-          {errors.email && <p style={errorStyle}>{errors.email}</p>}
+          {errors.email && <p id="email-error" style={errorStyle}>{errors.email}</p>}
           
           <input
             type="password"
@@ -136,24 +139,23 @@ const Login = () => {
             onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors({...errors, password: ''}); }}
             style={inputStyle(errors.password)}
             required
-            onFocus={(e) => e.target.style.borderColor = '#e94560'}
-            onBlur={(e) => e.target.style.borderColor = errors.password ? '#e94560' : (theme === 'dark' ? '#3a3a5a' : '#e0e0e0')}
+            aria-describedby={errors.password ? "password-error" : undefined}
           />
-          {errors.password && <p style={errorStyle}>{errors.password}</p>}
+          {errors.password && <p id="password-error" style={errorStyle}>{errors.password}</p>}
           
           <button 
             type="submit" 
-            style={{ ...buttonStyle, opacity: loading ? 0.7 : 1 }}
+            style={{ ...buttonStyle, opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
             disabled={loading}
-            onMouseEnter={(e) => !loading && (e.target.style.opacity = 0.9)}
-            onMouseLeave={(e) => e.target.style.opacity = loading ? 0.7 : 1}
+            onMouseEnter={(e) => !loading && (e.target.style.transform = 'translateY(-2px)')}
+            onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
         
-        <p style={{ textAlign: 'center', marginTop: '1.5rem', color: theme === 'dark' ? '#aaa' : '#666' }}>
-          Don't have an account? <Link to="/register" style={{ color: '#e94560', textDecoration: 'none', fontWeight: '600' }}>Sign up</Link>
+        <p style={{ textAlign: 'center', marginTop: '1.8rem', color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)' }}>
+          Don't have an account? <Link to="/register" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: '700' }}>Sign up</Link>
         </p>
       </div>
     </div>

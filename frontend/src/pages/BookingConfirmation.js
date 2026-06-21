@@ -41,23 +41,23 @@ const BookingConfirmation = () => {
   const ticketStyle = {
     maxWidth: '600px',
     margin: '3rem auto',
-    background: theme === 'dark' ? '#1e1e3a' : 'white',
-    borderRadius: '20px',
+    background: theme === 'dark' ? 'var(--surface-dark)' : 'var(--surface)',
+    borderRadius: 'var(--radius-xl)',
     padding: '3rem',
-    boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
-    border: `1px solid ${theme === 'dark' ? '#3a3a5a' : '#e0e0e0'}`
+    boxShadow: 'var(--shadow-lg)',
+    border: `1px solid ${theme === 'dark' ? 'var(--border-dark)' : 'var(--border)'}`
   };
 
   return (
     <div className="container" style={{ padding: '3rem 0', textAlign: 'center' }}>
       <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🎉</div>
-      <h1 style={{ color: theme === 'dark' ? '#f0f0f0' : '#333', marginBottom: '2rem' }}>
+      <h1 style={{ color: 'inherit', marginBottom: '2rem' }} className="fade-in">
         Booking Confirmed!
       </h1>
 
       {booking && (
-        <div style={ticketStyle}>
-          <h2 style={{ color: '#e94560', marginBottom: '2rem', fontSize: '2rem' }}>
+        <div style={ticketStyle} className="fade-in">
+          <h2 style={{ color: 'var(--primary)', marginBottom: '2rem', fontSize: '2rem', fontWeight: '700' }}>
             🎬 {booking.movie?.title}
           </h2>
           
@@ -69,21 +69,21 @@ const BookingConfirmation = () => {
             textAlign: 'left'
           }}>
             <div>
-              <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Theater</p>
+              <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Theater</p>
               <p style={{ fontWeight: '600', fontSize: '1.1rem' }}>{booking.theater?.name}</p>
             </div>
             <div>
-              <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Date</p>
+              <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Date</p>
               <p style={{ fontWeight: '600', fontSize: '1.1rem' }}>
                 {booking.show ? new Date(booking.show.date).toLocaleDateString() : ''}
               </p>
             </div>
             <div>
-              <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Time</p>
+              <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Time</p>
               <p style={{ fontWeight: '600', fontSize: '1.1rem' }}>{booking.show?.time}</p>
             </div>
             <div>
-              <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Seats</p>
+              <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Seats</p>
               <p style={{ fontWeight: '600', fontSize: '1.1rem' }}>
                 {booking.selectedSeats.map(s => `${String.fromCharCode(65 + s.row)}${s.seat + 1}`).join(', ')}
               </p>
@@ -92,32 +92,32 @@ const BookingConfirmation = () => {
 
           <div style={{ 
             padding: '1.5rem', 
-            background: 'linear-gradient(135deg, #e94560, #ff6b6b)', 
-            borderRadius: '12px',
+            background: 'linear-gradient(135deg, var(--primary), var(--primary-hover))', 
+            borderRadius: 'var(--radius-lg)',
             marginBottom: '2rem'
           }}>
             <p style={{ color: 'white', fontSize: '0.9rem', marginBottom: '0.3rem' }}>Total Amount</p>
-            <p style={{ color: 'white', fontSize: '2.5rem', fontWeight: 'bold' }}>
-              ₹{booking.totalAmount}
+            <p style={{ color: 'white', fontSize: '2.5rem', fontWeight: '700' }}>
+              ${booking.totalAmount.toFixed(2)}
             </p>
           </div>
 
-          <p style={{ color: theme === 'dark' ? '#aaa' : '#666', marginBottom: '0.5rem' }}>
+          <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.5rem' }}>
             Booking ID
           </p>
           <p style={{ 
             fontFamily: 'monospace', 
             fontSize: '1.1rem', 
-            background: theme === 'dark' ? '#1a1a2e' : '#f5f5f5', 
+            background: theme === 'dark' ? 'var(--bg-dark)' : '#f5f5f5', 
             padding: '0.8rem', 
-            borderRadius: '8px',
+            borderRadius: 'var(--radius-md)',
             marginBottom: '2rem',
-            border: `1px solid ${theme === 'dark' ? '#3a3a5a' : '#e0e0e0'}`
+            border: `1px solid ${theme === 'dark' ? 'var(--border-dark)' : 'var(--border)'}`
           }}>
             {booking._id}
           </p>
 
-          <p style={{ color: '#4caf50', fontWeight: '600', marginBottom: '2rem' }}>
+          <p style={{ color: 'var(--success)', fontWeight: '600', marginBottom: '2rem' }}>
             Status: {booking.status === 'confirmed' ? '✅ Confirmed' : 'Cancelled'}
           </p>
         </div>
@@ -126,18 +126,19 @@ const BookingConfirmation = () => {
       <Link 
         to="/" 
         style={{
-          background: 'linear-gradient(135deg, #e94560, #ff6b6b)',
+          background: 'linear-gradient(135deg, var(--primary), var(--primary-hover))',
           color: 'white',
           padding: '1rem 3rem',
           textDecoration: 'none',
-          borderRadius: '12px',
+          borderRadius: 'var(--radius-lg)',
           fontSize: '1.1rem',
-          fontWeight: 'bold',
+          fontWeight: '700',
           display: 'inline-block',
-          transition: 'opacity 0.3s ease'
+          transition: 'all 0.2s ease',
+          boxShadow: '0 4px 12px rgba(233, 69, 96, 0.3)'
         }}
-        onMouseEnter={(e) => e.target.style.opacity = '0.9'}
-        onMouseLeave={(e) => e.target.style.opacity = '1'}
+        onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+        onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
       >
         Back to Home
       </Link>
