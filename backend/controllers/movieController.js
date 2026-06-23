@@ -275,15 +275,31 @@ const getSimilarMovies = async (req, res) => {
 
 const addReview = async (req, res) => {
   try {
+    const { user, rating, comment } = req.body;
+    
+    // Validate required fields
+    if (!user || !rating) {
+      return res.status(400).json({ message: 'User and rating are required' });
+    }
+    
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+    }
+    
     const movie = await Movie.findById(req.params.id);
     if (movie) {
-      movie.reviews.push(req.body);
+      movie.reviews.push({
+        user,
+        rating,
+        comment: comment || ''
+      });
       await movie.save();
       res.json(movie);
     } else {
       res.status(404).json({ message: 'Movie not found' });
     }
   } catch (error) {
+    console.error('Error adding review:', error);
     res.status(500).json({ message: error.message });
   }
 };

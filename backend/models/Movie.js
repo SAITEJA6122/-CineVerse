@@ -12,7 +12,7 @@ const movieSchema = new mongoose.Schema({
   trailer: { type: String },
   poster: { type: String },
   rating: { type: Number, default: 0 },
-  reviews: [{ user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, rating: Number, comment: String, date: { type: Date, default: Date.now } }],
+  reviews: [{ user: String, rating: Number, comment: String, date: { type: Date, default: Date.now } }],
   isTrending: { type: Boolean, default: false },
   isUpcoming: { type: Boolean, default: false },
   isComingSoon: { type: Boolean, default: false },

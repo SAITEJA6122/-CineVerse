@@ -120,7 +120,8 @@ const MovieDetails = () => {
       setReviewRating(5);
       showToast('Review submitted!', 'success');
     } catch (error) {
-      showToast('Failed to submit review', 'error');
+      console.error('Review submission error:', error.response?.data || error.message);
+      showToast(error.response?.data?.message || 'Failed to submit review', 'error');
     }
   };
 
