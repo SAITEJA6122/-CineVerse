@@ -22,7 +22,7 @@ const MovieCard = ({ movie, delay = 0 }) => {
     fontSize: '1.15rem',
     fontWeight: '700',
     marginBottom: '0.6rem',
-    color: 'inherit'
+    color: theme === 'dark' ? '#ffffff' : 'var(--text-primary)'
   };
 
   const genreStyle = {
