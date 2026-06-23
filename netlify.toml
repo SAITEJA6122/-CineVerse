@@ -3,23 +3,21 @@
   command = "npm run build"
   publish = "build"
 
+# Backend API base, baked into the build so deploys can't fall back to
+# localhost. Update this if the backend host changes.
+[build.environment]
+  REACT_APP_API_URL = "https://cineverse-7p97.onrender.com/api"
+
+# Proxy same-origin /api requests to the backend (avoids CORS/mixed-content).
+# Must come before the SPA fallback below.
+[[redirects]]
+  from = "/api/*"
+  to = "https://cineverse-7p97.onrender.com/api/:splat"
+  status = 200
+  force = true
+
 # SPA fallback so client-side routes (e.g. /movie/:id) don't 404 on refresh.
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-# The frontend reaches the backend via REACT_APP_API_URL (set in Netlify
-# Site settings -> Environment variables), e.g.
-#   REACT_APP_API_URL=https://cineverse-backend.onrender.com/api
-#
-# Alternatively, proxy same-origin requests to avoid CORS/mixed-content by
-# uncommenting the redirect below (and setting REACT_APP_API_URL=/api). Replace
-# the host with your deployed backend URL. This rule must come before the SPA
-# fallback above to take effect.
-#
-# [[redirects]]
-#   from = "/api/*"
-#   to = "https://cineverse-backend.onrender.com/api/:splat"
-#   status = 200
-#   force = true
