@@ -46,7 +46,7 @@ A full-featured, production-ready movie ticket booking application built with th
 
 - **Frontend**: React.js, React Router, Axios
 - **Backend**: Node.js, Express.js
-- **Database**: MongoDB (MongoDB Atlas) - OR use MOCK DATA for instant testing
+- **Database**: MongoDB (MongoDB Atlas) — required
 - **Authentication**: JWT (JSON Web Tokens)
 - **File Upload**: Multer (for posters and images)
 - **Styling**: Inline styles with theme support
@@ -79,8 +79,7 @@ main/
 │   ├── middleware/
 │   │   └── authMiddleware.js   # JWT authentication middleware
 │   ├── uploads/                # Uploaded file storage
-│   ├── mockData.js             # Mock data for instant testing
-│   ├── .env                    # Environment variables (create this)
+│   ├── seed.js                 # Seeds MongoDB with sample data
 │   ├── server.js               # Express server entry point
 │   └── package.json            # Backend dependencies
 └── frontend/
@@ -115,9 +114,8 @@ main/
 
 ### Prerequisites
 - Node.js (v14 or later)
-
-### Option 1: Quick Start with Mock Data (No MongoDB Required!)
-This is the easiest way to see the app in action!
+- A MongoDB database (e.g. a free MongoDB Atlas cluster). There is no mock-data
+  mode — the API reads/writes MongoDB.
 
 1. Clone and Set Up Backend
 ```bash
@@ -125,19 +123,39 @@ cd backend
 npm install
 ```
 
-2. Start the Backend
+2. Create a `.env` file in the backend directory (see `backend/.env.example`):
+```env
+PORT=5000
+MONGODB_URI=mongodb+srv://<your-username>:<your-password>@cluster0.mongodb.net/movieticketbooking?retryWrites=true&w=majority
+JWT_SECRET=your-strong-secret-key-here
+NODE_ENV=development
+```
+
+Make sure to replace:
+- `<your-username>` with your MongoDB Atlas username
+- `<your-password>` with your MongoDB Atlas password
+- `your-strong-secret-key-here` with a secure JWT secret
+
+3. Seed the database with sample movies (one time):
+```bash
+npm run seed
+```
+
+4. Start the Backend
 ```bash
 npm run dev
 ```
-The backend will automatically use mock data!
 
-3. Set Up Frontend
+5. Set Up the Frontend
 ```bash
 cd ../frontend
 npm install
 ```
 
-4. Start the Frontend
+6. (Optional) point the frontend at a non-default API by creating `frontend/.env`
+(see `frontend/.env.example`). It defaults to `http://localhost:5000/api`.
+
+7. Start the Frontend
 ```bash
 npm start
 ```
@@ -146,45 +164,27 @@ The app should now be running at:
 - Frontend: `http://localhost:3000`
 - Backend API: `http://localhost:5000`
 
-### Option 2: Using MongoDB Atlas
-If you want to use a real database:
+## ☁️ Deployment
 
-1. Clone and Set Up Backend
-```bash
-cd backend
-npm install
-```
+Netlify only hosts the **static frontend**. The backend must be deployed
+separately, otherwise the deployed site calls `http://localhost:5000` and every
+request fails with a "Network Error".
 
-2. Create a `.env` file in the backend directory:
-```env
-PORT=5000
-MONGODB_URI=mongodb+srv://<your-username>:<your-password>@cluster0.mongodb.net/movieticketbooking?retryWrites=true&w=majority
-JWT_SECRET=your-strong-secret-key-here
-NODE_ENV=development
-USE_MOCK_DATA=false
-```
+### 1. Deploy the backend (Render)
+This repo includes a `render.yaml` blueprint.
+1. In the [Render dashboard](https://dashboard.render.com), choose **New → Blueprint** and select this repo.
+2. Render creates the `cineverse-backend` web service. Set its environment variables:
+   - `MONGODB_URI` — your MongoDB Atlas connection string
+   - `JWT_SECRET` — a long random string
+3. After it deploys, note the public URL, e.g. `https://cineverse-backend.onrender.com`.
+4. Seed the database once (locally, pointing `MONGODB_URI` at Atlas): `cd backend && npm run seed`.
 
-Make sure to replace:
-- `<your-username>` with your MongoDB Atlas username
-- `<your-password>` with your MongoDB Atlas password
-- `your-strong-secret-key-here` with a secure JWT secret
-- Set `USE_MOCK_DATA=false` to use real database
+### 2. Point the frontend at the backend (Netlify)
+1. In **Netlify → Site settings → Environment variables**, add:
+   - `REACT_APP_API_URL = https://cineverse-backend.onrender.com/api` (use your backend URL, include `/api`).
+2. Trigger a redeploy so the build picks up the variable.
 
-3. Start the Backend
-```bash
-npm run dev
-```
-
-4. Set Up Frontend
-```bash
-cd frontend
-npm install
-```
-
-5. Start the Frontend
-```bash
-npm start
-```
+The "Network Error" messages disappear once the deployed frontend can reach the deployed backend over https.
 
 ## 📚 API Endpoints
 
@@ -253,7 +253,7 @@ npm start
 4. View booking analytics
 5. Add/edit movie information
 
-To create an admin user, you can manually update a user's `role` to `"admin"` in the MongoDB database (if not using mock data).
+To create an admin user, manually update a user's `role` to `"admin"` in the MongoDB database.
 
 ## 📱 Responsive Design
 
@@ -294,8 +294,6 @@ The app is fully responsive:
 This project is open source and available under the MIT License.
 
 ## 🤝 Contributing
-Admin : admin@cineverse.com / admin123
-
 Contributions, issues, and feature requests are welcome!
 
 ---
