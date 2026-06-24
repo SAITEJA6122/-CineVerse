@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Check, X, Eye, EyeOff, Facebook, Globe } from 'lucide-react';
+import { Check, X, Eye, EyeOff, MessageCircle, Globe } from 'lucide-react';
 import AuthContext from '../context/AuthContext';
 import ThemeContext from '../context/ThemeContext';
 
@@ -307,7 +307,7 @@ const Login = () => {
             onMouseEnter={(e) => e.target.style.background = theme === 'dark' ? 'var(--bg-dark)' : '#f5f5f5'}
             onMouseLeave={(e) => e.target.style.background = theme === 'dark' ? 'var(--surface-dark)' : 'var(--surface)'}
           >
-            <Facebook size={20} /> Facebook
+            <MessageCircle size={20} /> Facebook
           </button>
         </div>
         
