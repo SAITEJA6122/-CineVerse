@@ -14,7 +14,7 @@ const Profile = () => {
   const [watchlist, setWatchlist] = useState([]);
   const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [avatarPreview, setAvatarPreview] = useState(null);
-  const [isUploadingAvatar] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [activeTab, setActiveTab] = useState('bookings');
   const { user, getAuthHeaders, setUser } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
