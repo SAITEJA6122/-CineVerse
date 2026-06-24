@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
-import { ChevronLeft, ChevronRight, Play, TrendingUp, Calendar as CalendarIcon, Sparkles, Star, Users, Film } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Play, TrendingUp, Calendar as CalendarIcon, Sparkles, Star, Users, Film, Flame } from 'lucide-react';
 import MovieCard from '../components/MovieCard';
 import ThemeContext from '../context/ThemeContext';
 import ToastContext from '../context/ToastContext';
