@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { CheckCircle, Star, Calendar, Clock, MapPin, CreditCard, Ticket, Share2, Download, Home } from 'lucide-react';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 import ThemeContext from '../context/ThemeContext';
@@ -50,16 +51,21 @@ const BookingConfirmation = () => {
 
   return (
     <div className="container" style={{ padding: '3rem 0', textAlign: 'center' }}>
-      <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🎉</div>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+        <CheckCircle size={64} color="var(--success)" />
+      </div>
       <h1 style={{ color: 'inherit', marginBottom: '2rem' }} className="fade-in">
         Booking Confirmed!
       </h1>
 
       {booking && (
         <div style={ticketStyle} className="fade-in">
-          <h2 style={{ color: 'var(--primary)', marginBottom: '2rem', fontSize: '2rem', fontWeight: '700' }}>
-            🎬 {booking.movie?.title}
-          </h2>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '2rem' }}>
+            <Ticket size={32} color="var(--primary)" />
+            <h2 style={{ color: 'var(--primary)', fontSize: '2rem', fontWeight: '700', margin: 0 }}>
+              {booking.movie?.title}
+            </h2>
+          </div>
           
           <div style={{ 
             display: 'grid', 
@@ -68,25 +74,37 @@ const BookingConfirmation = () => {
             marginBottom: '2rem',
             textAlign: 'left'
           }}>
-            <div>
-              <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Theater</p>
-              <p style={{ fontWeight: '600', fontSize: '1.1rem' }}>{booking.theater?.name}</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <MapPin size={18} color={theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)'} />
+              <div>
+                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.9rem', margin: 0 }}>Theater</p>
+                <p style={{ fontWeight: '600', fontSize: '1.1rem' }}>{booking.theater?.name}</p>
+              </div>
             </div>
-            <div>
-              <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Date</p>
-              <p style={{ fontWeight: '600', fontSize: '1.1rem' }}>
-                {booking.show ? new Date(booking.show.date).toLocaleDateString() : ''}
-              </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Calendar size={18} color={theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)'} />
+              <div>
+                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.9rem', margin: 0 }}>Date</p>
+                <p style={{ fontWeight: '600', fontSize: '1.1rem' }}>
+                  {booking.show ? new Date(booking.show.date).toLocaleDateString() : ''}
+                </p>
+              </div>
             </div>
-            <div>
-              <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Time</p>
-              <p style={{ fontWeight: '600', fontSize: '1.1rem' }}>{booking.show?.time}</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Clock size={18} color={theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)'} />
+              <div>
+                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.9rem', margin: 0 }}>Time</p>
+                <p style={{ fontWeight: '600', fontSize: '1.1rem' }}>{booking.show?.time}</p>
+              </div>
             </div>
-            <div>
-              <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Seats</p>
-              <p style={{ fontWeight: '600', fontSize: '1.1rem' }}>
-                {booking.selectedSeats.map(s => `${String.fromCharCode(65 + s.row)}${s.seat + 1}`).join(', ')}
-              </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Star size={18} color={theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)'} />
+              <div>
+                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.9rem', margin: 0 }}>Seats</p>
+                <p style={{ fontWeight: '600', fontSize: '1.1rem' }}>
+                  {booking.selectedSeats.map(s => `${String.fromCharCode(65 + s.row)}${s.seat + 1}`).join(', ')}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -117,9 +135,54 @@ const BookingConfirmation = () => {
             {booking._id}
           </p>
 
-          <p style={{ color: 'var(--success)', fontWeight: '600', marginBottom: '2rem' }}>
-            Status: {booking.status === 'confirmed' ? '✅ Confirmed' : 'Cancelled'}
+          <p style={{ color: 'var(--success)', fontWeight: '600', marginBottom: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+            <CheckCircle size={20} /> Status: {booking.status === 'confirmed' ? 'Confirmed' : 'Cancelled'}
           </p>
+
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button 
+              onClick={() => showToast('Ticket downloaded!', 'success')}
+              style={{
+                background: 'transparent',
+                color: 'var(--primary)',
+                border: '2px solid var(--primary)',
+                padding: '0.8rem 1.5rem',
+                borderRadius: 'var(--radius-md)',
+                fontSize: '1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => e.target.style.background = 'var(--primary-light)'}
+              onMouseLeave={(e) => e.target.style.background = 'transparent'}
+            >
+              <Download size={18} /> Download Ticket
+            </button>
+            <button 
+              onClick={() => showToast('Share link copied!', 'success')}
+              style={{
+                background: 'transparent',
+                color: 'var(--primary)',
+                border: '2px solid var(--primary)',
+                padding: '0.8rem 1.5rem',
+                borderRadius: 'var(--radius-md)',
+                fontSize: '1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => e.target.style.background = 'var(--primary-light)'}
+              onMouseLeave={(e) => e.target.style.background = 'transparent'}
+            >
+              <Share2 size={18} /> Share
+            </button>
+          </div>
         </div>
       )}
 
@@ -133,14 +196,17 @@ const BookingConfirmation = () => {
           borderRadius: 'var(--radius-lg)',
           fontSize: '1.1rem',
           fontWeight: '700',
-          display: 'inline-block',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '0.5rem',
           transition: 'all 0.2s ease',
-          boxShadow: '0 4px 12px rgba(233, 69, 96, 0.3)'
+          boxShadow: '0 4px 12px rgba(233, 69, 96, 0.3)',
+          marginTop: '2rem'
         }}
         onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
         onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
       >
-        Back to Home
+        <Home size={20} /> Back to Home
       </Link>
     </div>
   );

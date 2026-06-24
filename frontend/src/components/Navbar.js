@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Film, Sun, Moon, Menu, X, LogOut, User, Settings } from 'lucide-react';
 import AuthContext from '../context/AuthContext';
 import ThemeContext from '../context/ThemeContext';
 import Search from './Search';
@@ -31,7 +32,9 @@ const Navbar = () => {
     fontSize: '1.8rem',
     fontWeight: '800',
     color: 'var(--primary)',
-    textDecoration: 'none'
+    textDecoration: 'none',
+    display: 'flex',
+    alignItems: 'center'
   };
 
   const linkStyle = {
@@ -85,7 +88,10 @@ const Navbar = () => {
     <nav style={navStyle}>
       <div className="container">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
-          <Link to="/" style={logoStyle} onClick={() => setIsMenuOpen(false)} aria-label="Go to home page">🎬 CineVerse</Link>
+          <Link to="/" style={logoStyle} onClick={() => setIsMenuOpen(false)} aria-label="Go to home page" className="logo-link">
+            <Film size={28} style={{ marginRight: '0.5rem' }} />
+            CineVerse
+          </Link>
           
           {/* Search Component - desktop and mobile */}
           <div style={{ flex: 1, maxWidth: '400px', minWidth: '200px' }}>
@@ -107,7 +113,7 @@ const Navbar = () => {
             )}
             
             <button style={themeBtnStyle} onClick={toggleTheme} title="Toggle theme" aria-label="Toggle light/dark theme">
-              {theme === 'dark' ? '☀️' : '🌙'}
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
             
             {user ? (
@@ -129,7 +135,7 @@ const Navbar = () => {
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={isMenuOpen}
           >
-            {isMenuOpen ? '✕' : '☰'}
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
         
@@ -149,7 +155,7 @@ const Navbar = () => {
           
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
             <button style={themeBtnStyle} onClick={toggleTheme} title="Toggle theme">
-              {theme === 'dark' ? '☀️' : '🌙'}
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
             
             {user ? (

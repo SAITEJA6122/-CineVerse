@@ -13,6 +13,30 @@
   --success: #4caf50;
   --warning: #ff9800;
   --error: #f44336;
+  --info: #2196f3;
+  
+  /* Genre-specific colors */
+  --genre-action: #e94560;
+  --genre-comedy: #ffc107;
+  --genre-drama: #9c27b0;
+  --genre-horror: #4a148c;
+  --genre-romance: #e91e63;
+  --genre-sci-fi: #00bcd4;
+  --genre-thriller: #ff5722;
+  --genre-animation: #8bc34a;
+  --genre-documentary: #607d8b;
+  --genre-fantasy: #7c4dff;
+  --genre-adventure: #ff9800;
+  
+  /* Gradients */
+  --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-hero-dark: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+  --gradient-card-dark: linear-gradient(145deg, rgba(30,30,58,0.9) 0%, rgba(30,30,58,0.7) 100%);
+  --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-hover));
+  --gradient-success: linear-gradient(135deg, #4caf50, #8bc34a);
+  --gradient-warning: linear-gradient(135deg, #ff9800, #ffc107);
+  --gradient-error: linear-gradient(135deg, #f44336, #ff5722);
   
   /* Light mode */
   --bg: #f5f7fa;
@@ -37,9 +61,38 @@
   /* Typography */
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   --font-mono: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 16px;
+  --radius-xl: 24px;
+  
+  /* Font sizes */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  
+  /* Font weights */
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  
+  /* Line heights */
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
 }
 
 body {
@@ -50,6 +103,29 @@ body {
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
   transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Texture patterns */
+.texture-dots {
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+body.dark-mode .texture-dots {
+  background-image: radial-gradient(var(--border-dark) 1px, transparent 1px);
+}
+
+.texture-grid {
+  background-image: 
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+body.dark-mode .texture-grid {
+  background-image: 
+    linear-gradient(var(--border-dark) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-dark) 1px, transparent 1px);
 }
 
 body.dark-mode {
@@ -126,6 +202,26 @@ body.dark-mode .skeleton {
   align-items: center;
   gap: 0.5rem;
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.btn:active::after {
+  width: 200px;
+  height: 200px;
 }
 
 .btn-primary {
@@ -140,7 +236,7 @@ body.dark-mode .skeleton {
 }
 
 .btn-primary:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
 }
 
 .btn-secondary {
@@ -151,6 +247,11 @@ body.dark-mode .skeleton {
 
 .btn-secondary:hover {
   background: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+.btn-secondary:active {
+  transform: translateY(0) scale(0.98);
 }
 
 /* Form styles */
@@ -185,6 +286,7 @@ body.dark-mode .form-control {
   box-shadow: var(--shadow-md);
   overflow: hidden;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 body.dark-mode .card {
@@ -201,6 +303,40 @@ body.dark-mode .card {
 body.dark-mode .card:hover {
   box-shadow: var(--shadow-lg-dark);
 }
+
+/* 3D tilt effect on card hover */
+.card-3d {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.card-3d:hover {
+  transform: rotateX(5deg) rotateY(5deg) translateY(-8px);
+}
+
+/* Genre badges */
+.genre-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.genre-action { background: rgba(233, 69, 96, 0.15); color: var(--genre-action); }
+.genre-comedy { background: rgba(255, 193, 7, 0.15); color: var(--genre-comedy); }
+.genre-drama { background: rgba(156, 39, 176, 0.15); color: var(--genre-drama); }
+.genre-horror { background: rgba(74, 20, 140, 0.15); color: var(--genre-horror); }
+.genre-romance { background: rgba(233, 30, 99, 0.15); color: var(--genre-romance); }
+.genre-sci-fi { background: rgba(0, 188, 212, 0.15); color: var(--genre-sci-fi); }
+.genre-thriller { background: rgba(255, 87, 34, 0.15); color: var(--genre-thriller); }
+.genre-animation { background: rgba(139, 195, 74, 0.15); color: var(--genre-animation); }
+.genre-documentary { background: rgba(96, 125, 139, 0.15); color: var(--genre-documentary); }
+.genre-fantasy { background: rgba(124, 77, 255, 0.15); color: var(--genre-fantasy); }
+.genre-adventure { background: rgba(255, 152, 0, 0.15); color: var(--genre-adventure); }
 
 /* Responsive Styles */
 @media (max-width: 1024px) {
@@ -224,4 +360,69 @@ body.dark-mode .card:hover {
   .container {
     padding: 0 12px;
   }
+}
+
+/* Skeleton Loading States */
+.skeleton {
+  background: linear-gradient(90deg, 
+    var(--surface) 25%, 
+    rgba(128, 128, 128, 0.1) 50%, 
+    var(--surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-text {
+  height: 1em;
+  margin-bottom: 0.5em;
+  border-radius: 4px;
+}
+
+.skeleton-avatar {
+  border-radius: 50%;
+}
+
+.skeleton-card {
+  height: 100%;
+  min-height: 400px;
+}
+
+/* Lazy Loading Images */
+img {
+  content-visibility: auto;
+  contain-intrinsic-size: 200px 300px;
+}
+
+/* Virtual Scroll Container */
+.virtual-scroll {
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.virtual-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.virtual-scroll::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+.virtual-scroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.virtual-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }

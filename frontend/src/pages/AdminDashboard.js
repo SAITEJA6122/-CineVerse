@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Settings, Film, MapPin, Calendar, Clock, DollarSign, TrendingUp, Users, Ticket, Trash2, Edit, CheckCircle, XCircle, Flame, Calendar as CalendarIcon, Sparkles, Star, Play } from 'lucide-react';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 import ThemeContext from '../context/ThemeContext';
@@ -46,7 +47,10 @@ const AdminDashboard = () => {
     screenNumber: 1,
     date: '',
     time: '',
-    price: ''
+    price: '',
+    priceSilver: '',
+    priceGold: '',
+    pricePlatinum: ''
   });
   const [editingMovie, setEditingMovie] = useState(null);
   const [editingTheater, setEditingTheater] = useState(null);
@@ -271,7 +275,10 @@ const AdminDashboard = () => {
       screenNumber: show.screenNumber,
       date: new Date(show.date).toISOString().split('T')[0],
       time: show.time,
-      price: String(show.price)
+      price: String(show.price),
+      priceSilver: String(show.priceSilver || ''),
+      priceGold: String(show.priceGold || ''),
+      pricePlatinum: String(show.pricePlatinum || '')
     });
     setActiveTab('shows');
   };
@@ -311,7 +318,10 @@ const AdminDashboard = () => {
       screenNumber: 1,
       date: '',
       time: '',
-      price: ''
+      price: '',
+      priceSilver: '',
+      priceGold: '',
+      pricePlatinum: ''
     });
     setEditingShow(null);
   };
@@ -417,8 +427,9 @@ const AdminDashboard = () => {
 
   return (
     <div className="container" style={{ padding: '3rem 0' }}>
-      <h1 style={{ color: 'inherit', marginBottom: '2rem' }}>
-        🎛️ Admin Dashboard
+      <h1 style={{ color: 'inherit', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <Settings size={32} />
+        Admin Dashboard
       </h1>
 
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }} role="tablist">
@@ -446,19 +457,31 @@ const AdminDashboard = () => {
           <div className="fade-in">
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
               <div style={getCardStyle()}>
-                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Users</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <Users size={20} color={theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)'} />
+                  <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>Total Users</p>
+                </div>
                 <p style={{ fontSize: '2.5rem', fontWeight: '700', color: 'var(--primary)' }}>{analytics.totalUsers}</p>
               </div>
               <div style={getCardStyle()}>
-                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Movies</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <Film size={20} color={theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)'} />
+                  <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>Total Movies</p>
+                </div>
                 <p style={{ fontSize: '2.5rem', fontWeight: '700', color: 'var(--primary)' }}>{analytics.totalMovies}</p>
               </div>
               <div style={getCardStyle()}>
-                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Bookings</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <Ticket size={20} color={theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)'} />
+                  <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>Total Bookings</p>
+                </div>
                 <p style={{ fontSize: '2.5rem', fontWeight: '700', color: 'var(--primary)' }}>{analytics.totalBookings}</p>
               </div>
               <div style={getCardStyle()}>
-                <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Revenue</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <TrendingUp size={20} color={theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)'} />
+                  <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>Total Revenue</p>
+                </div>
                 <p style={{ fontSize: '2.5rem', fontWeight: '700', color: 'var(--primary)' }}>${analytics.totalRevenue?.toFixed(2) || 0}</p>
               </div>
             </div>
@@ -524,16 +547,16 @@ const AdminDashboard = () => {
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem', gap: '1rem' }}>
                 <label htmlFor="movie-trending" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600' }}>
-                  <input id="movie-trending" type="checkbox" checked={formData.isTrending} onChange={(e) => setFormData({ ...formData, isTrending: e.target.checked })} /> 🔥 Trending
+                  <input id="movie-trending" type="checkbox" checked={formData.isTrending} onChange={(e) => setFormData({ ...formData, isTrending: e.target.checked })} /> <Flame size={16} /> Trending
                 </label>
                 <label htmlFor="movie-upcoming" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600' }}>
-                  <input id="movie-upcoming" type="checkbox" checked={formData.isUpcoming} onChange={(e) => setFormData({ ...formData, isUpcoming: e.target.checked })} /> 📅 Upcoming
+                  <input id="movie-upcoming" type="checkbox" checked={formData.isUpcoming} onChange={(e) => setFormData({ ...formData, isUpcoming: e.target.checked })} /> <CalendarIcon size={16} /> Upcoming
                 </label>
                 <label htmlFor="movie-coming-soon" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600' }}>
-                  <input id="movie-coming-soon" type="checkbox" checked={formData.isComingSoon} onChange={(e) => setFormData({ ...formData, isComingSoon: e.target.checked })} /> 🎉 Coming Soon
+                  <input id="movie-coming-soon" type="checkbox" checked={formData.isComingSoon} onChange={(e) => setFormData({ ...formData, isComingSoon: e.target.checked })} /> <Sparkles size={16} /> Coming Soon
                 </label>
                 <label htmlFor="movie-recommended" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600' }}>
-                  <input id="movie-recommended" type="checkbox" checked={formData.isRecommended} onChange={(e) => setFormData({ ...formData, isRecommended: e.target.checked })} /> ⭐ Recommended
+                  <input id="movie-recommended" type="checkbox" checked={formData.isRecommended} onChange={(e) => setFormData({ ...formData, isRecommended: e.target.checked })} /> <Star size={16} /> Recommended
                 </label>
               </div>
               <div style={{ display: 'flex', gap: '1rem' }}>
@@ -564,21 +587,21 @@ const AdminDashboard = () => {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
                           <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'inherit' }}>{movie.title}</h3>
                           <div style={{ display: 'flex', gap: '0.3rem' }}>
-                            {movie.isTrending && <span title="Trending">🔥</span>}
-                            {movie.isUpcoming && <span title="Upcoming">📅</span>}
-                            {movie.isComingSoon && <span title="Coming Soon">🎉</span>}
-                            {movie.isRecommended && <span title="Recommended">⭐</span>}
+                            {movie.isTrending && <Flame size={16} color={theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)'} title="Trending" />}
+                            {movie.isUpcoming && <CalendarIcon size={16} color={theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)'} title="Upcoming" />}
+                            {movie.isComingSoon && <Sparkles size={16} color={theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)'} title="Coming Soon" />}
+                            {movie.isRecommended && <Star size={16} color={theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)'} title="Recommended" />}
                           </div>
                         </div>
                         <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.9rem' }}>
                           {Array.isArray(movie.genre) ? movie.genre.join(', ') : movie.genre} • {movie.language}
                         </p>
-                        <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.8rem', fontSize: '0.9rem' }}>
-                          ⭐ {movie.rating?.toFixed(1) || 'N/A'} • {movie.duration} min
+                        <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.8rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                          <Star size={14} fill={movie.rating ? 'currentColor' : 'none'} /> {movie.rating?.toFixed(1) || 'N/A'} • {movie.duration} min
                         </p>
                         <div style={{ display: 'flex', gap: '0.6rem' }}>
-                          <button onClick={() => handleEdit(movie)} style={getSmallPrimaryButtonStyle()}>Edit</button>
-                          <button onClick={() => handleDelete(movie._id)} style={getSmallDangerButtonStyle()}>Delete</button>
+                          <button onClick={() => handleEdit(movie)} style={getSmallPrimaryButtonStyle()}><Edit size={14} style={{ marginRight: '0.25rem' }} /> Edit</button>
+                          <button onClick={() => handleDelete(movie._id)} style={getSmallDangerButtonStyle()}><Trash2 size={14} style={{ marginRight: '0.25rem' }} /> Delete</button>
                         </div>
                       </div>
                     </div>
@@ -711,7 +734,7 @@ const AdminDashboard = () => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="show-price" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Price</label>
+                  <label htmlFor="show-price" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Base Price (Legacy)</label>
                   <input 
                     id="show-price"
                     type="number" 
@@ -720,6 +743,47 @@ const AdminDashboard = () => {
                     required 
                     style={getInputStyle()} 
                   />
+                </div>
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Tiered Pricing</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label htmlFor="show-price-silver" style={{ display: 'block', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Silver</label>
+                    <input 
+                      id="show-price-silver"
+                      type="number" 
+                      value={showFormData.priceSilver} 
+                      onChange={(e) => setShowFormData({ ...showFormData, priceSilver: e.target.value })} 
+                      required 
+                      style={getInputStyle()} 
+                      placeholder="Silver price"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="show-price-gold" style={{ display: 'block', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Gold</label>
+                    <input 
+                      id="show-price-gold"
+                      type="number" 
+                      value={showFormData.priceGold} 
+                      onChange={(e) => setShowFormData({ ...showFormData, priceGold: e.target.value })} 
+                      required 
+                      style={getInputStyle()} 
+                      placeholder="Gold price"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="show-price-platinum" style={{ display: 'block', marginBottom: '0.3rem', fontSize: '0.9rem' }}>Platinum</label>
+                    <input 
+                      id="show-price-platinum"
+                      type="number" 
+                      value={showFormData.pricePlatinum} 
+                      onChange={(e) => setShowFormData({ ...showFormData, pricePlatinum: e.target.value })} 
+                      required 
+                      style={getInputStyle()} 
+                      placeholder="Platinum price"
+                    />
+                  </div>
                 </div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
@@ -751,7 +815,17 @@ const AdminDashboard = () => {
                     <h3 style={{ margin: '0 0 0.5rem', color: 'inherit' }}>{show.movie?.title}</h3>
                     <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem' }}>{show.theater?.name} • Screen {show.screenNumber}</p>
                     <p style={{ color: theme === 'dark' ? 'var(--text-secondary-dark)' : 'var(--text-secondary)', marginBottom: '0.3rem' }}>{new Date(show.date).toLocaleDateString()} • {show.time}</p>
-                    <p style={{ color: 'var(--primary)', fontWeight: '700', marginBottom: '0.8rem' }}>Price: ${show.price}</p>
+                    <div style={{ marginBottom: '0.8rem' }}>
+                      {show.priceSilver || show.priceGold || show.pricePlatinum ? (
+                        <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
+                          <span style={{ color: '#9e9e9e', fontWeight: '600', fontSize: '0.9rem' }}>Silver: ${show.priceSilver}</span>
+                          <span style={{ color: '#ffd700', fontWeight: '600', fontSize: '0.9rem' }}>Gold: ${show.priceGold}</span>
+                          <span style={{ color: '#e5e4e2', fontWeight: '600', fontSize: '0.9rem' }}>Platinum: ${show.pricePlatinum}</span>
+                        </div>
+                      ) : (
+                        <p style={{ color: 'var(--primary)', fontWeight: '700' }}>Price: ${show.price}</p>
+                      )}
+                    </div>
                     <div style={{ display: 'flex', gap: '0.6rem' }}>
                       <button onClick={() => handleEditShow(show)} style={getSmallPrimaryButtonStyle()}>Edit</button>
                       <button onClick={() => handleDeleteShow(show._id)} style={getSmallDangerButtonStyle()}>Delete</button>
