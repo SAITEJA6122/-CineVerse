@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, Mail, Shield, Star, Heart, Calendar, Clock, MapPin, Camera, Upload, TrendingUp, Award, Ticket, X, Sparkles, BarChart3 } from 'lucide-react';
+import { User, Mail, Shield, Star, Heart, Calendar, Clock, MapPin, Camera, TrendingUp, Award, Ticket, X, Sparkles, BarChart3 } from 'lucide-react';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 import ThemeContext from '../context/ThemeContext';
@@ -14,7 +14,6 @@ const Profile = () => {
   const [watchlist, setWatchlist] = useState([]);
   const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [avatarPreview, setAvatarPreview] = useState(null);
-  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [activeTab, setActiveTab] = useState('bookings');
   const { user, getAuthHeaders, setUser } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
@@ -100,7 +99,6 @@ const Profile = () => {
       return;
     }
 
-    setIsUploadingAvatar(true);
     try {
       const formData = new FormData();
       formData.append('avatar', file);
@@ -114,8 +112,6 @@ const Profile = () => {
       showToast('Avatar updated successfully', 'success');
     } catch (error) {
       showToast('Failed to upload avatar', 'error');
-    } finally {
-      setIsUploadingAvatar(false);
     }
   };
 
