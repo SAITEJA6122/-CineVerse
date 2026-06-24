@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ZoomIn, ZoomOut, Maximize2, Heart, Users, ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { ZoomIn, ZoomOut, Maximize2, Heart, Users, Star } from 'lucide-react';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 import ThemeContext from '../context/ThemeContext';

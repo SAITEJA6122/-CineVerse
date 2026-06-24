@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Film, Sun, Moon, Menu, X, LogOut, User, Settings } from 'lucide-react';
+import { Film, Sun, Moon, Menu, X } from 'lucide-react';
 import AuthContext from '../context/AuthContext';
 import ThemeContext from '../context/ThemeContext';
 import Search from './Search';

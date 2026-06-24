@@ -12,7 +12,7 @@ const Home = () => {
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [comingSoonMovies, setComingSoonMovies] = useState([]);
   const [recommendedMovies, setRecommendedMovies] = useState([]);
-  const [genreFilter, setGenreFilter] = useState('');
+  const [genreFilter] = useState('');
   const [languageFilter, setLanguageFilter] = useState('');
   const [minDuration, setMinDuration] = useState('');
   const [maxDuration, setMaxDuration] = useState('');

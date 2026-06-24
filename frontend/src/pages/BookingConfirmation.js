@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { CheckCircle, Star, Calendar, Clock, MapPin, CreditCard, Ticket, Share2, Download, Home } from 'lucide-react';
+import { CheckCircle, Star, Calendar, Clock, MapPin, Ticket, Share2, Download, Home } from 'lucide-react';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 import ThemeContext from '../context/ThemeContext';

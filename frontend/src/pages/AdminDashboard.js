@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Settings, Film, MapPin, Calendar, Clock, DollarSign, TrendingUp, Users, Ticket, Trash2, Edit, CheckCircle, XCircle, Flame, Calendar as CalendarIcon, Sparkles, Star, Play } from 'lucide-react';
+import { Settings, Film, TrendingUp, Users, Ticket, Trash2, Edit, Flame, Calendar as CalendarIcon, Sparkles, Star } from 'lucide-react';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';
 import ThemeContext from '../context/ThemeContext';

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Check, X, Eye, EyeOff, MessageCircle, Globe } from 'lucide-react';
+import { Eye, EyeOff, MessageCircle, Globe } from 'lucide-react';
 import AuthContext from '../context/AuthContext';
 import ThemeContext from '../context/ThemeContext';
 

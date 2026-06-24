@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useContext, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Search as SearchIcon, Mic, Clock, X, Star } from 'lucide-react';
+import { Mic, Clock, X, Star } from 'lucide-react';
 import axios from 'axios';
 import ThemeContext from '../context/ThemeContext';
 import API_BASE from '../config';
